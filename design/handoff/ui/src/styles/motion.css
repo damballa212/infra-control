@@ -1,0 +1,217 @@
+/* Movimiento de página. Duraciones/easing: tokens (motion.*). */
+@keyframes glyph-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes stage-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes stage-pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+@keyframes stage-march {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 12px 0;
+  }
+}
+@keyframes stage-march-y {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 0 12px;
+  }
+}
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes wipe {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes typewriter {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes dialog-in {
+  from {
+    transform: translateY(16px);
+    opacity: 0.4;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+@keyframes pop {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+@keyframes burst {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy));
+  }
+}
+@keyframes shake-a {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
+}
+@keyframes shake-b {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
+}
+@keyframes flash-ok {
+  0% {
+    background: var(--color-brand-mint);
+  }
+  100% {
+    background: var(--color-state-busy-bg);
+  }
+}
+@keyframes row-new {
+  0% {
+    background: var(--color-brand-sun);
+  }
+  100% {
+    background: transparent;
+  }
+}
+
+.anim-enter {
+  animation: enter var(--motion-duration-enter) var(--motion-easing-pixel-enter)
+    both;
+}
+.anim-wipe {
+  animation: wipe var(--motion-duration-wipe) var(--motion-easing-pixel-wipe)
+    both;
+}
+.anim-type {
+  animation: typewriter var(--motion-duration-type)
+    var(--motion-easing-pixel-type) both;
+}
+.anim-dialog {
+  animation: dialog-in var(--motion-duration-dialog) steps(4, end);
+}
+.anim-pop {
+  animation: pop 240ms steps(3, end);
+}
+.anim-shake-a {
+  animation: shake-a 320ms steps(6, end);
+}
+.anim-shake-b {
+  animation: shake-b 320ms steps(6, end);
+}
+.anim-flash {
+  animation: flash-ok 1.2s steps(6, end);
+}
+.anim-new {
+  animation: row-new 1.2s steps(6, end);
+}
+
+/* Pausa total cuando la app no está visible. */
+.app--paused,
+.app--paused * {
+  animation-play-state: paused !important;
+}
+
+/* Movimiento reducido: sin bucles, sin transiciones, sin partículas. Los estados siguen distinguibles por texto y símbolo. */
+@media (prefers-reduced-motion: reduce) {
+  .app *,
+  .app *::before,
+  .app *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .app .mood-busy .h-arc.a1 {
+    opacity: 1;
+  }
+  .app .mood-asleep .h-z.z1 {
+    opacity: 1;
+  }
+  .app .is-happy .h-eyes-flare,
+  .app .mood-busy .h-eyes-flare {
+    display: none;
+  }
+  .app .router--reporting .r-wave.a2,
+  .app .router--reading .r-wave.a2 {
+    opacity: 1;
+  }
+  .app .burst {
+    display: none;
+  }
+  .app .stage-block.is-active {
+    opacity: 0.7;
+  }
+}

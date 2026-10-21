@@ -1,0 +1,88 @@
+/* Sprites de la propuesta UX (PC, FiberHome, MacBook). Por pasos, atados al estado real; se pausan con .app--paused y se anulan con movimiento reducido. */
+
+/* ---------- PC ---------- */
+.hs-pc-fan-b { animation: pcFan .16s steps(1) infinite; }
+.hs-pc-fan-b.fast { animation-duration: .07s; }
+.hs-pc-fan-b.slow { animation-duration: .5s; }
+@keyframes pcFan { 0% { opacity: 0 } 50% { opacity: 1 } }
+
+.hs-pc-rgb { animation: pcRgb 4s steps(1) infinite; }
+.hs-pc-rgb.fast { animation-duration: 1.2s; }
+@keyframes pcRgb {
+  0% { fill: #7FD8BE } 20% { fill: #FFD166 } 40% { fill: #FF7A6B } 60% { fill: #F7A8B8 } 80% { fill: #8C7AB8 }
+}
+
+.hs-pc-term-a { animation: pcTermA 2.4s steps(1) infinite; }
+.hs-pc-term-b { animation: pcTermB 2.4s steps(1) infinite; }
+@keyframes pcTermA { 0% { opacity: 1 } 50% { opacity: 0 } }
+@keyframes pcTermB { 0% { opacity: 0 } 50% { opacity: 1 } }
+.hs-pc-caret { animation: pcCaret 1s steps(1) infinite; }
+@keyframes pcCaret { 0% { opacity: 1 } 50% { opacity: 0 } }
+
+.hs-pc-g1 { animation: pcG1 1.8s steps(1) infinite; }
+.hs-pc-g2 { animation: pcG2 1.8s steps(1) infinite; }
+.hs-pc-g3 { animation: pcG3 1.8s steps(1) infinite; }
+@keyframes pcG1 { 0% { opacity: 1 } 33.3% { opacity: 0 } }
+@keyframes pcG2 { 0% { opacity: 0 } 33.3% { opacity: 1 } 66.6% { opacity: 0 } }
+@keyframes pcG3 { 0% { opacity: 0 } 66.6% { opacity: 1 } }
+
+.hs-pc-dot { animation: pcDot 1s steps(1) infinite; opacity: .2; }
+@keyframes pcDot { 0% { opacity: 1 } 12.5% { opacity: .55 } 25% { opacity: .2 } }
+
+.hs-pc-standby { animation: pcStandby 3.2s steps(4) infinite; }
+@keyframes pcStandby { 0%, 100% { opacity: 1 } 50% { opacity: .25 } }
+
+.hs-pc-z { animation: pcZ 2.4s steps(4) infinite; }
+@keyframes pcZ { 0% { transform: translateY(1px); opacity: 0 } 25% { opacity: 1 } 100% { transform: translateY(-3px); opacity: 0 } }
+
+.hs-pc-q { animation: pcQ 1.6s steps(1) infinite; }
+@keyframes pcQ { 0%, 60% { opacity: 1 } 61%, 100% { opacity: .25 } }
+
+.hs-pc-hop { animation: pcHop 1.4s steps(1) infinite; }
+@keyframes pcHop { 0%, 55% { transform: none } 56%, 70% { transform: translateY(-2px) } 71%, 82% { transform: translateY(-1px) } 83% { transform: none } }
+
+.hs-pc-cloud { animation: pcCloud 7s steps(11) infinite; }
+@keyframes pcCloud { 0% { transform: translateX(0) } 100% { transform: translateX(-11px) } }
+
+/* ---------- Router ---------- */
+.hs-r-wave { animation: rWave 2.4s steps(1) infinite; opacity: 0; }
+.hs-r-wave.fast { animation-duration: 1.1s; }
+@keyframes rWave { 0% { opacity: 0 } 10%, 45% { opacity: 1 } 55%, 100% { opacity: 0 } }
+
+.hs-r-blink { animation: rBlink .9s steps(1) infinite; }
+.hs-r-blink.fast { animation-duration: .35s; }
+.hs-r-blink2 { animation: rBlink 1.3s steps(1) .2s infinite; }
+.hs-r-blink3 { animation: rBlink 2.1s steps(1) .5s infinite; }
+@keyframes rBlink { 0%, 40% { opacity: 1 } 41%, 55% { opacity: .2 } 56%, 70% { opacity: 1 } 71%, 80% { opacity: .2 } 81% { opacity: 1 } }
+
+.hs-r-packet { animation: rPacket 1.2s steps(4) infinite; }
+.hs-r-packet.fast { animation-duration: .5s; }
+@keyframes rPacket { 0% { transform: translateY(0) } 100% { transform: translateY(-4px) } }
+
+.hs-r-q { animation: pcQ 1.6s steps(1) infinite; }
+
+/* ---------- MacBook ---------- */
+.hs-mac-glow { animation: macGlow 5s steps(2) infinite; }
+@keyframes macGlow { 0%, 100% { opacity: 1 } 50% { opacity: .9 } }
+.hs-mac-cursor { animation: macCursor 4.8s steps(1) infinite; }
+@keyframes macCursor { 0% { transform: translate(0, 0) } 30% { transform: translate(-3px, 2px) } 55% { transform: translate(-7px, 1px) } 80% { transform: translate(-2px, -1px) } }
+.hs-mac-dock { animation: macDock 6s steps(1) infinite; }
+@keyframes macDock { 0%, 78% { transform: none } 82% { transform: translateY(-1px) } 86% { transform: translateY(-2px) } 90% { transform: translateY(-1px) } 94% { transform: none } }
+.hs-mac-q { animation: pcQ 1.6s steps(1) infinite; }
+.hs-mac-plug { animation: macPlug 2.4s steps(1) infinite; }
+@keyframes macPlug { 0%, 50% { transform: none } 51%, 100% { transform: translateY(-1px) } }
+.hs-mac-z { animation: pcZ 2.4s steps(4) infinite; }
+.hs-mac-lid--demo { transform-box: view-box; transform-origin: 16px 17px; animation: macLid 6s steps(1) infinite; }
+@keyframes macLid { 0% { transform: scaleY(.06) } 6% { transform: scaleY(.3) } 10% { transform: scaleY(.62) } 14% { transform: scaleY(.9) } 17% { transform: scaleY(1) } 72% { transform: scaleY(1) } 76% { transform: scaleY(.62) } 80% { transform: scaleY(.3) } 84%, 100% { transform: scaleY(.06) } }
+
+/* ---------- Inicio ---------- */
+.link-pulse { animation: linkPulse 1.2s steps(3) infinite; }
+@keyframes linkPulse { 0% { transform: translateY(0) } 100% { transform: translateY(18px) } }
+.here { animation: here 1.8s steps(1) infinite; }
+@keyframes here { 0%, 50% { transform: none } 51%, 100% { transform: translateY(-3px) } }
+
+@media (prefers-reduced-motion: reduce) {
+  [class*="hs-"], .link-pulse, .here { animation: none !important; }
+  .hs-pc-dot, .hs-r-wave { opacity: 1; }
+  .hs-pc-term-b, .hs-pc-fan-b, .hs-pc-g2, .hs-pc-g3 { opacity: 0; }
+}

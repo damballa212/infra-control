@@ -1,0 +1,34 @@
+[Unit]
+Description=Read-only FiberHome telemetry collector for Infra Control
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=infra-router
+Group=infra-router
+ExecStart=/opt/infra-control/current/runtime/node --preserve-symlinks-main /opt/infra-control/current/dist/server/router-collector.js
+Restart=always
+RestartSec=3
+TimeoutStopSec=10
+KillSignal=SIGTERM
+UMask=0077
+LoadCredential=router-key:/etc/infra-control-router-telemetry/router-key
+LoadCredential=router-known-hosts:/opt/fiberhome-acs/bootstrap/router_known_hosts
+LoadCredential=router-token:/etc/infra-control-router-telemetry/router-token
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictAddressFamilies=AF_UNIX AF_INET
+IPAddressDeny=any
+IPAddressAllow=localhost
+CapabilityBoundingSet=
+LockPersonality=yes
+
+[Install]
+WantedBy=multi-user.target

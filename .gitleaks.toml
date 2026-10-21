@@ -1,0 +1,9 @@
+title = "Infra Control"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Synthetic passwords used only by the in-memory test app; they protect nothing"
+paths = ['''tests/.*\.test\.ts''']
+regexes = ['''una-clave-[a-z-]+''']

@@ -1,0 +1,662 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Infra Control",
+    "version": "0.1.0",
+    "description": "API privada compartida por PWA y agentes. Operaciones asíncronas e idempotentes. Nunca asumir éxito por HTTP 202."
+  },
+  "servers": [
+    {
+      "url": "https://panel.example.com"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "paths": {
+    "/api/events": {
+      "get": {
+        "summary": "SSE autenticado con historial durable, sin polling por cliente",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Last-Event-ID",
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "Cursor inicial obtenido de GET /api/resources; Last-Event-ID tiene precedencia."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Eventos desktop/resource/operation/incident; resync indica cursor fuera de ventana y exige una nueva snapshot."
+          },
+          "400": {
+            "description": "Cursor inválido"
+          },
+          "503": {
+            "description": "Límite de conexiones"
+          }
+        }
+      }
+    },
+    "/api/desktop/events": {
+      "post": {
+        "summary": "Avisos salientes del PC; requiere token exclusivo del SO, sin permisos de lectura u operación",
+        "responses": {
+          "204": {
+            "description": "Aviso aceptado"
+          },
+          "400": {
+            "description": "bootId, sequence o event inválido"
+          },
+          "401": {
+            "description": "Dispositivo no autorizado"
+          },
+          "409": {
+            "description": "Secuencia o arranque anterior"
+          }
+        }
+      }
+    },
+    "/api/desktop/commands": {
+      "get": {
+        "summary": "Canal de órdenes iniciado por la PC (long-poll hasta 25 s): 200 con una orden de la lista cerrada, 204 si no hay; token exclusivo del SO",
+        "security": [],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "wait",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 25
+            }
+          },
+          {
+            "in": "query",
+            "name": "caps",
+            "schema": {
+              "type": "string",
+              "description": "Capacidades que el agente sabe ejecutar: ping, power, boot-default"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Orden {id, command, expectedBootId, issuedAt}"
+          },
+          "204": {
+            "description": "Sin órdenes"
+          },
+          "401": {
+            "description": "Dispositivo no autorizado"
+          }
+        }
+      }
+    },
+    "/api/desktop/commands/{id}/ack": {
+      "post": {
+        "summary": "Confirmación o rechazo de una orden entregada; el bootId debe coincidir con el esperado",
+        "security": [],
+        "responses": {
+          "204": {
+            "description": "Confirmación aceptada"
+          },
+          "400": {
+            "description": "Confirmación no válida"
+          },
+          "401": {
+            "description": "Dispositivo no autorizado"
+          },
+          "409": {
+            "description": "La orden ya no está vigente o el bootId no coincide"
+          }
+        }
+      }
+    },
+    "/api/mac/events": {
+      "post": {
+        "summary": "Reporter saliente de presencia y avisos best-effort de reposo/despertar del Mac; token exclusivo, sin permiso de lectura ni operación",
+        "security": [],
+        "responses": {
+          "204": {
+            "description": "Aviso aceptado o repetición exacta"
+          },
+          "400": {
+            "description": "Aviso inválido"
+          },
+          "401": {
+            "description": "Token exclusivo inválido"
+          },
+          "409": {
+            "description": "Secuencia o bootId anterior"
+          },
+          "503": {
+            "description": "Reporter no configurado"
+          }
+        }
+      }
+    },
+    "/api/mac/health": {
+      "get": {
+        "summary": "Snapshot local de presencia del Mac; no hace SSH al dispositivo",
+        "responses": {
+          "200": {
+            "description": "resource, telemetría reciente o null, fetchedAt; presencia stale tras 90 s"
+          }
+        }
+      }
+    },
+    "/api/hermes/events": {
+      "post": {
+        "summary": "Heartbeat saliente del estado systemd; token exclusivo, sin acceso a chats ni órdenes",
+        "security": [],
+        "responses": {
+          "204": {
+            "description": "Muestra aceptada"
+          },
+          "400": {
+            "description": "Muestra fuera del contrato"
+          },
+          "401": {
+            "description": "Token exclusivo inválido"
+          },
+          "409": {
+            "description": "Secuencia anterior o stream retirado"
+          },
+          "503": {
+            "description": "Reporter no configurado"
+          }
+        }
+      }
+    },
+    "/api/hermes/health": {
+      "get": {
+        "summary": "Última observación systemd de Hermes; no consulta la instancia EC2",
+        "responses": {
+          "200": {
+            "description": "telemetry con estado de unidad y vencimiento a 45 s, o null"
+          }
+        }
+      }
+    },
+    "/api/system/health": {
+      "get": {
+        "summary": "Estado de observadores, panel y cola de avisos; sin sondeos adicionales por cliente",
+        "responses": {
+          "200": {
+            "description": "panel, push, cloud, router, Mac, PC y Hermes"
+          }
+        }
+      }
+    },
+    "/api/router/check": {
+      "post": {
+        "summary": "Comprueba una vez el túnel privado del FiberHome; compartido durante 10 s y sin consultar PC, ACS, WAN o Internet",
+        "responses": {
+          "200": {
+            "description": "probe, resource y cached; una respuesta negativa no significa router apagado ni Internet caído"
+          },
+          "401": {
+            "description": "Autenticación requerida"
+          },
+          "429": {
+            "description": "Máximo seis comprobaciones por minuto"
+          },
+          "503": {
+            "description": "Sondeo no configurado o broker local inaccesible; no se altera el estado observado del túnel"
+          }
+        }
+      }
+    },
+    "/api/push/config": {
+      "get": {
+        "summary": "Clave VAPID pública y disponibilidad; no revela credenciales",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "enabled, vapidPublicKey"
+          }
+        }
+      }
+    },
+    "/api/push/status": {
+      "get": {
+        "summary": "Estado de la cola y número de suscripciones de la sesión humana",
+        "responses": {
+          "200": {
+            "description": "enabled, subscriptions, pending, dead"
+          }
+        }
+      }
+    },
+    "/api/push/subscriptions": {
+      "get": {
+        "summary": "Suscripciones de la sesión humana sin incluir endpoints ni claves",
+        "responses": {
+          "200": {
+            "description": "subscriptions y preferencias"
+          }
+        }
+      },
+      "post": {
+        "summary": "Registrar suscripción validada de navegador para esta cuenta",
+        "responses": {
+          "201": {
+            "description": "Dispositivo registrado; endpoints se cifran en SQLite"
+          },
+          "400": {
+            "description": "Suscripción o proveedor no permitido"
+          },
+          "403": {
+            "description": "La gestión requiere sesión humana y mismo origen"
+          },
+          "409": {
+            "description": "Límite de dispositivos alcanzado"
+          },
+          "503": {
+            "description": "VAPID no configurado"
+          }
+        }
+      }
+    },
+    "/api/push/subscriptions/{id}/preferences": {
+      "put": {
+        "summary": "Actualizar preferencias solo del dispositivo de la sesión humana",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Preferencias guardadas"
+          },
+          "404": {
+            "description": "Dispositivo no encontrado"
+          }
+        }
+      }
+    },
+    "/api/push/subscriptions/{id}/test": {
+      "post": {
+        "summary": "Encolar una prueba no sensible para este dispositivo; no confirma recepción",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Encolada con TTL de60s; comprobar el dispositivo"
+          },
+          "403": {
+            "description": "Solo sesión humana"
+          },
+          "404": {
+            "description": "Dispositivo no encontrado"
+          },
+          "429": {
+            "description": "Una prueba por minuto"
+          },
+          "503": {
+            "description": "VAPID no configurado"
+          }
+        }
+      }
+    },
+    "/api/push/subscriptions/{id}": {
+      "delete": {
+        "summary": "Revocar suscripción y eliminar su cola asociada",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Revocada"
+          },
+          "404": {
+            "description": "Dispositivo no encontrado"
+          }
+        }
+      }
+    },
+    "/api/desktop/boot-preference": {
+      "get": {
+        "summary": "Preferencia física deseada y último valor UEFI observado; lee SQLite",
+        "responses": {
+          "200": {
+            "description": "desired, effective, state, version, requestedAt, observedAt, verifiedAt"
+          }
+        }
+      },
+      "post": {
+        "summary": "Cambiar el default UEFI sin encender ni reiniciar; si la PC no responde queda pendiente",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "system",
+                  "confirmed",
+                  "expectedVersion"
+                ],
+                "properties": {
+                  "system": {
+                    "enum": [
+                      "windows",
+                      "cachyos"
+                    ]
+                  },
+                  "confirmed": {
+                    "const": true
+                  },
+                  "expectedVersion": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default aplicado y leído de vuelta desde el firmware"
+          },
+          "202": {
+            "description": "Intención pendiente u operación incierta; revisar antes de reintentar"
+          },
+          "400": {
+            "description": "Sistema, confirmación, versión o clave no válida"
+          },
+          "409": {
+            "description": "Versión vencida, operación PC activa o replay de una operación UEFI fallida"
+          },
+          "503": {
+            "description": "Compuerta activa o controlador sin capacidad"
+          }
+        }
+      }
+    },
+    "/api/desktop/boot-preference/pending": {
+      "delete": {
+        "summary": "Cancelar una intención pendiente antes de aplicarla",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "expectedVersion"
+                ],
+                "properties": {
+                  "expectedVersion": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Intención cancelada"
+          },
+          "400": {
+            "description": "Versión inválida"
+          },
+          "409": {
+            "description": "No está pendiente o la versión cambió"
+          }
+        }
+      }
+    },
+    "/api/desktop/boot-preference/verify": {
+      "get": {
+        "summary": "Leer el orden UEFI actual por SSH autenticado; no escribe ni corrige drift",
+        "responses": {
+          "200": {
+            "description": "Último default físico leído y estado comparado con desired"
+          },
+          "409": {
+            "description": "Operación PC activa o estado cambiado durante la lectura"
+          },
+          "503": {
+            "description": "PC/controlador no disponible o lectura no verificable"
+          }
+        }
+      }
+    },
+    "/api/router/health": {
+      "get": {
+        "summary": "Snapshot local de salud del FiberHome; no consulta ACS, router ni PC",
+        "responses": {
+          "200": {
+            "description": "resource, última telemetría, último probe SSH fresco o null, fetchedAt"
+          },
+          "401": {
+            "description": "Autenticación requerida"
+          }
+        }
+      }
+    },
+    "/api/router/telemetry": {
+      "post": {
+        "summary": "Ingesta privada de métricas ligeras por el túnel SSH",
+        "security": [],
+        "responses": {
+          "204": {
+            "description": "Muestra aceptada o repetición exacta idempotente"
+          },
+          "400": {
+            "description": "Métrica fuera de contrato"
+          },
+          "401": {
+            "description": "Token exclusivo de telemetría inválido"
+          },
+          "409": {
+            "description": "Secuencia o generación retirada"
+          },
+          "503": {
+            "description": "Telemetría no configurada"
+          }
+        }
+      }
+    },
+    "/api/resources": {
+      "get": {
+        "summary": "Inventario y capacidades actuales (caché compartida 60 s)",
+        "responses": {
+          "200": {
+            "description": "resources, fetchedAt, refreshSeconds y cursor monotónico previo a la lectura para sincronizar SSE"
+          }
+        }
+      }
+    },
+    "/api/costs": {
+      "get": {
+        "summary": "Costes y presupuestos (caché persistente 24 h; no fuerza consultas a AWS)",
+        "responses": {
+          "200": {
+            "description": "accounts, fetchedAt, nextRefreshAt"
+          }
+        }
+      }
+    },
+    "/api/operations": {
+      "get": {
+        "summary": "Últimas 100 operaciones",
+        "responses": {
+          "200": {
+            "description": "operations"
+          }
+        }
+      },
+      "post": {
+        "summary": "Ejecutar una capacidad anunciada por el recurso",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "resourceId",
+                  "action"
+                ],
+                "properties": {
+                  "resourceId": {
+                    "type": "string"
+                  },
+                  "action": {
+                    "enum": [
+                      "start",
+                      "stop",
+                      "refresh",
+                      "boot-windows",
+                      "boot-cachyos"
+                    ]
+                  },
+                  "confirmed": {
+                    "type": "boolean",
+                    "description": "Obligatorio true para todas las acciones salvo refresh. El agente debe contar con autorización del usuario."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Orden registrada; consultar su estado hasta succeeded, failed o uncertain"
+          },
+          "400": {
+            "description": "Orden o capacidad no válida"
+          },
+          "409": {
+            "description": "Conflicto de idempotencia u operación en curso"
+          },
+          "429": {
+            "description": "Esperar Retry-After"
+          },
+          "503": {
+            "description": "Compuerta de despliegue activa; respetar Retry-After"
+          }
+        }
+      }
+    },
+    "/api/operations/{id}": {
+      "get": {
+        "summary": "Resultado verificable de una orden",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operation: id, actor, resourceId, action, state, message, createdAt, updatedAt"
+          },
+          "404": {
+            "description": "No existe"
+          }
+        }
+      }
+    },
+    "/api/operations/{id}/history": {
+      "get": {
+        "summary": "Transiciones durables de una orden",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{ events: [{ id, type, aggregateId, payload, createdAt }] }"
+          },
+          "404": {
+            "description": "No existe"
+          }
+        }
+      }
+    }
+  }
+}

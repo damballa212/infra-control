@@ -1,0 +1,126 @@
+[
+  {
+    "id": "normal",
+    "description": "Todo reportando; sin órdenes activas."
+  },
+  {
+    "id": "login-bad",
+    "description": "Sin sesión; las credenciales siempre son incorrectas."
+  },
+  {
+    "id": "login-limited",
+    "description": "Sin sesión; tras el intento, límite de 5 fallos (429, 15 min)."
+  },
+  {
+    "id": "login-ok",
+    "description": "Sin sesión; el acceso es correcto."
+  },
+  {
+    "id": "session-expires",
+    "description": "La sesión caduca en el segundo ciclo de inventario (401)."
+  },
+  {
+    "id": "server-down",
+    "description": "El inventario carga una vez y después el panel no responde."
+  },
+  {
+    "id": "rate-limited",
+    "description": "El inventario carga una vez y después responde 429 con espera de 45 s."
+  },
+  {
+    "id": "stale-data",
+    "description": "Todas las observaciones tienen 6 minutos."
+  },
+  {
+    "id": "partial-coolify",
+    "description": "Coolify no respondió; EC2 y router están al día."
+  },
+  {
+    "id": "return-from-background",
+    "description": "La segunda lectura del inventario tarda (regreso del segundo plano)."
+  },
+  {
+    "id": "fh-stale",
+    "description": "FiberHome con el último reporte de hace 14 min."
+  },
+  {
+    "id": "fh-acs",
+    "description": "El servidor ACS no responde."
+  },
+  {
+    "id": "fh-read-running",
+    "description": "Lectura del router encolada (en curso)."
+  },
+  {
+    "id": "fh-read-ok",
+    "description": "Lectura del router finalizada y confirmada."
+  },
+  {
+    "id": "fh-read-uncertain",
+    "description": "La lectura del router no se pudo confirmar."
+  },
+  {
+    "id": "ec2-pending",
+    "description": "game-server está iniciando."
+  },
+  {
+    "id": "coolify-failed",
+    "description": "erp-suite con fallo reportado por Coolify."
+  },
+  {
+    "id": "coolify-down",
+    "description": "Coolify no disponible."
+  },
+  {
+    "id": "activity",
+    "description": "Actividad con una lectura en curso, una incierta y una fallida."
+  },
+  {
+    "id": "ops-empty",
+    "description": "Aún no hay órdenes."
+  },
+  {
+    "id": "power-succeeds",
+    "description": "Las órdenes de energía terminan confirmadas."
+  },
+  {
+    "id": "power-uncertain",
+    "description": "Las órdenes de energía terminan sin confirmar."
+  },
+  {
+    "id": "power-fails",
+    "description": "Las órdenes de energía fallan."
+  },
+  {
+    "id": "power-ambiguous",
+    "description": "El envío de la orden se corta tras salir (ambiguo): se puede recuperar con la misma clave."
+  },
+  {
+    "id": "costs-loading",
+    "description": "Primer cálculo de costes en curso."
+  },
+  {
+    "id": "costs-partial",
+    "description": "agents quedó parcial por el límite de páginas."
+  },
+  {
+    "id": "costs-denied",
+    "description": "lab no tiene permiso en Cost Explorer ni en Budgets."
+  },
+  {
+    "id": "costs-no-budget",
+    "description": "AWS no devolvió presupuestos de coste para prod."
+  },
+  {
+    "id": "costs-first-day",
+    "description": "Primer día del mes: AWS aún no publica el consumo."
+  },
+  {
+    "id": "password-bad-current",
+    "description": "Cambio de contraseña: la actual es incorrecta."
+  },
+  {
+    "id": "password-limited",
+    "description": "Cambio de contraseña: demasiados intentos."
+  }
+]

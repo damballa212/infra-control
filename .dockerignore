@@ -1,0 +1,17 @@
+.git
+.local
+node_modules
+dist
+coverage
+design/*
+!design/handoff/
+design/handoff/node_modules
+design/handoff/dist
+design/handoff/screens
+design/handoff/source-mockups
+design/handoff/test-results
+design/handoff/playwright-report
+AGENTS.md
+*.sqlite*
+.env*
+**/._*

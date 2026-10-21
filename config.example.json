@@ -1,0 +1,33 @@
+{
+  "origin": "https://panel.example.com",
+  "passwordHash": "<output of scripts/make-credentials.ts>",
+  "agentTokens": [
+    { "name": "reader", "hash": "<sha256 of a read-only token>", "scopes": ["read"] }
+  ],
+  "aws": [
+    {
+      "name": "prod",
+      "accountId": "123456789012",
+      "accessKeyId": "<IAM user with start/stop/describe on the listed instances only>",
+      "secretAccessKey": "<secret>",
+      "instances": [
+        { "id": "i-0123456789abcdef0", "region": "us-east-1", "name": "web-1", "type": "t3.small" }
+      ]
+    }
+  ],
+  "coolify": { "url": "", "token": "", "resources": [] },
+  "acs": { "url": "", "deviceId": "" },
+  "desktop": {
+    "socketPath": "/run/infra-control-wol/wol.sock",
+    "reportTokenHashes": { "windows": "<sha256>", "cachyos": "<sha256>" }
+  },
+  "routerTelemetryTokenHash": "<sha256>",
+  "macTelemetryTokenHash": "<sha256>",
+  "hermes": { "resourceId": "aws:prod:i-0123456789abcdef0", "reportTokenHash": "<sha256>" },
+  "push": {
+    "vapidPublicKey": "",
+    "vapidPrivateKey": "",
+    "vapidSubject": "mailto:you@example.com",
+    "encryptionKeyHex": "<64 hex characters>"
+  }
+}

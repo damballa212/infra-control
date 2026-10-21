@@ -1,0 +1,32 @@
+[Unit]
+Description=Infra Control outbound Hermes user-unit health reporter
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/
+Environment=HERMES_UNIT=hermes-gateway.service
+LoadCredential=report-token:%h/.config/infra-control/hermes-report-token
+ExecStart=/usr/bin/python3 /opt/infra-control/hermes/reporter.py
+Restart=always
+RestartSec=5
+UMask=0077
+NoNewPrivileges=yes
+ProtectSystem=strict
+InaccessiblePaths=/home/ubuntu
+PrivateUsers=yes
+PrivateTmp=yes
+ProtectKernelTunables=yes
+LockPersonality=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+RestrictNamespaces=yes
+MemoryMax=32M
+CPUQuota=10%
+TasksMax=8
+StandardOutput=null
+StandardError=journal
+
+[Install]
+WantedBy=default.target
+

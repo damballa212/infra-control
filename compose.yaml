@@ -1,0 +1,37 @@
+services:
+  api:
+    image: infra-control:panel-0.5.17
+    pull_policy: never
+    restart: unless-stopped
+    init: true
+    ports:
+      - "127.0.0.1:17600:17600"
+    volumes:
+      - /opt/infra-control/secrets/config.json:/run/secrets/config.json:ro
+      - /opt/infra-control/data:/data
+      - /run/infra-control-wol:/run/infra-control-wol:ro
+    networks:
+      - default
+      - acs
+      - coolify
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,noexec,nosuid
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 384m
+    cpus: 0.75
+    pids_limit: 128
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:17600/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+networks:
+  acs:
+    external: true
+    name: fiberhome-acs_acs
+  coolify:
+    external: true
+    name: coolify

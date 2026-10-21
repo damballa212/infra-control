@@ -1,0 +1,286 @@
+/* Portado de los marcos aprobados ProtoD/B1–B8; conserva tokens y bordes pixel. */
+.gap-26 {
+  gap: var(--space-26);
+}
+.control-list {
+  min-width: 0;
+}
+.hero-eyebrow {
+  font: 600 14px/1.2 var(--font-family-display);
+  letter-spacing: 0.04em;
+  color: var(--color-brand-sun);
+}
+.hermes-tile {
+  flex: none;
+  width: 92px;
+  height: 92px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface-night-raised);
+}
+.detail-sprite {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 112px;
+  height: 112px;
+  background: var(--color-surface-night-raised);
+}
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 38px 0 18px;
+}
+.section-count {
+  margin-left: auto;
+}
+.cols {
+  padding: 28px 20px 60px;
+}
+.topcards {
+  gap: 0;
+}
+.page {
+  max-width: 1100px;
+}
+.page > .back {
+  align-self: flex-start;
+}
+.disclosure-body {
+  padding: 0 16px 16px;
+}
+.operation-row {
+  align-items: stretch;
+  padding-left: 0;
+  gap: 14px;
+}
+.operation-row > .grow {
+  padding: 8px 0;
+}
+.operation-row > span:last-child {
+  align-self: center;
+}
+.prototype-label {
+  padding: 6px 16px;
+  background: var(--color-brand-sun);
+  font: 500 11px/1.3 var(--font-family-mono);
+  color: var(--color-brand-night);
+}
+.system-notice {
+  padding: calc(var(--safe-top) + 12px) 20px 0;
+}
+/* Varios avisos seguidos: solo el primero reserva la zona del notch. */
+.system-notice + .system-notice {
+  padding-top: 12px;
+}
+/* El aviso ya separa del borde superior: la página no suma otro margen de cabecera. */
+.system-notice ~ .page {
+  padding-top: 24px;
+}
+.login {
+  max-width: 540px;
+  margin: 0 auto;
+}
+.login__body {
+  padding: 28px 24px 60px;
+}
+.page .t-h1 {
+  overflow-wrap: anywhere;
+}
+.line > * {
+  min-width: 0;
+}
+.line > .t-mono {
+  flex: none;
+}
+.input-group > .input {
+  min-width: 0;
+}
+.filter-chip {
+  white-space: normal;
+}
+@media (max-width: 360px) {
+  .hero__content {
+    padding-left: 16px;
+  }
+  .hero__actions {
+    right: 20px;
+    gap: 14px;
+  }
+  .hero .t-hero {
+    font-size: 44px;
+  }
+  .hero__content > .t-small {
+    max-width: 260px;
+  }
+  .hermes-tile {
+    width: 72px;
+    height: 80px;
+  }
+  .detail-sprite {
+    width: 76px;
+    height: 96px;
+  }
+  .detail-sprite svg {
+    max-width: 76px;
+  }
+  .key {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .cols {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .section-count {
+    font-size: 11px;
+  }
+  .topcards .t-title {
+    font-size: 32px;
+  }
+}
+@media (min-width: 701px) {
+  .cols {
+    padding: 28px 24px 60px;
+  }
+  .topcards {
+    gap: 32px;
+  }
+  .topcards > div > .section-heading {
+    display: none;
+  }
+  .hero__actions {
+    right: 28px;
+    top: 42px;
+  }
+  .login {
+    padding-top: 36px;
+  }
+  .system-notice {
+    padding: 20px 28px 0;
+  }
+}
+@media (min-width: 1101px) {
+  .cols {
+    padding: 36px 36px 72px;
+  }
+  .topcards {
+    gap: 32px;
+  }
+  .topcards .hermes-tile {
+    width: 72px;
+    height: 80px;
+  }
+  .topcards .t-title {
+    font-size: 32px;
+  }
+  .topcards .key-pair {
+    gap: 14px;
+  }
+}
+@media (max-width: 700px) {
+  .nav .nav__item--wide {
+    display: none;
+  }
+}
+@media (max-width: 360px) {
+  .pc-grid .pill {
+    font-size: 12px;
+    padding: 0 4px;
+    gap: 4px;
+    white-space: normal;
+    max-width: 100%;
+  }
+}
+/* La píldora base no debe sobrescribir el contraste del estado peligroso. */
+.pill.tone-bad {
+  color: var(--color-text-on-danger);
+}
+
+/* Mando principal: la PC y su sistema caben antes del primer scroll móvil. */
+.control-header{display:flex;align-items:flex-start;justify-content:space-between;padding:calc(18px + var(--safe-top)) 20px 0;color:var(--color-surface-paper);gap:12px}
+.control-header .t-label{color:var(--color-brand-sun);margin-bottom:4px}
+.control-header h1{color:var(--color-surface-paper)}
+.control-content{padding-top:20px}
+.cols--single{display:block;max-width:940px;margin:0 auto}
+.pc-command{padding:20px!important}
+.pc-command__heading{display:flex;align-items:center;gap:12px;min-width:0}
+.pc-command__system{font:600 22px/1.3 var(--font-family-body);margin-top:5px;color:var(--color-brand-sun)}
+.pc-command__status{font:500 11px/1.3 var(--font-family-mono);white-space:nowrap;align-self:flex-start}
+.pc-command__status.is-online{color:var(--color-brand-mint)}
+.pc-command__actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:12px;margin-top:20px}
+.pc-command__actions .key{min-width:0}
+.secondary-heading{margin:28px 0 12px}
+.compact-device{display:flex;align-items:center;gap:12px;padding:14px!important}
+.system-options{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+/* Fila del arranque predeterminado dentro del selector: altura fija para que el diálogo no salte al cambiar de opción. */
+.system-options .key{flex-direction:column;gap:2px}
+.system-options__now{font:600 12px/1 var(--font-family-body);letter-spacing:.04em;text-transform:uppercase}
+.boot-default{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:var(--size-hitbox);margin-top:18px}
+.boot-default + p{margin-top:10px}
+/* Elección del sistema del próximo encendido dentro del diálogo de apagado. */
+.boot-choice{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.boot-choice__label,.boot-choice__note{margin:0;color:var(--color-brand-cream)}
+@media(max-width:359px){.boot-default{flex-direction:column;align-items:stretch;gap:10px}.boot-default .key{width:100%}}
+.boot-default__text{margin:0;min-width:0;flex:1;color:var(--color-brand-cream)}
+.boot-default .key{flex:none;white-space:nowrap}
+.boot-default__error{color:var(--color-state-danger-on-night)}
+@media(max-width:360px){.control-header{padding:12px 16px}.pc-command{padding:16px!important}.pc-command__actions{grid-template-columns:1fr;gap:10px}.pc-command__status{white-space:normal;max-width:72px}.pc-command__system{font-size:20px}}
+
+/* ---------- Inicio sobre el atardecer (propuesta UX) ---------- */
+/* Con cielo, el saludo va siempre arriba: los avisos del sistema bajan debajo del encabezado en vez de empujarlo sobre el horizonte. */
+html.has-sky .shell__main{display:flex;flex-direction:column}
+html.has-sky .control-header{order:-1}
+html.has-sky .system-notice,html.has-sky .system-notice + .system-notice{padding:20px 20px 0}
+.sky-bg{position:fixed;inset:0;width:100%;height:100%;z-index:-1;display:block;pointer-events:none}
+html.has-sky .app{background:transparent}
+.app>.shell{position:relative;z-index:1}
+html:not(.has-sky) body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:var(--color-brand-night);z-index:60}
+.control-header h1{font-size:28px;line-height:1.1;text-shadow:3px 3px 0 var(--color-brand-ink)}
+.control-header__fresh{margin:8px 0 0;font:600 14px/1.3 var(--font-family-body);color:var(--color-brand-cream)}
+.sky-label{color:var(--color-brand-sun)!important}
+.control-content{padding-top:28px}
+.sprite-tile{flex:none;display:flex;align-items:center;justify-content:center;width:112px;height:80px;background:var(--color-brand-dusk);border:3px solid var(--color-brand-ink)}
+.sprite-tile--hermes{width:112px;height:112px}
+.sprite-tile--dashed{width:84px;height:72px;border-style:dashed;border-color:var(--color-brand-violet-soft)}
+.home-card{padding:16px!important}
+.home-card--dashed{border-style:dashed!important}
+.home-card__head{display:flex;align-items:center;gap:14px;min-width:0}
+.home-card__foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px}
+.home-card__foot .t-small{max-width:180px;color:var(--color-brand-violet)}
+.home-link{display:flex;align-items:center;gap:10px;padding:6px 0 6px 40px;font:700 11px/1 var(--font-family-mono);letter-spacing:.08em;color:var(--color-brand-cream)}
+.home-link__rail{position:relative;width:6px;height:30px;overflow:hidden;background:var(--color-brand-ink)}
+.home-link__pulse{position:absolute;left:1px;top:-6px;width:4px;height:4px;background:var(--color-brand-mint)}
+.pc-command__system{color:var(--color-brand-violet)!important}
+.pc-command__status.is-online{color:var(--color-brand-ink)!important}
+.pc-command{color:var(--color-text-default)}
+.pc-command .t-small{color:var(--color-brand-violet)}
+
+/* ---------- Mantener pulsado ---------- */
+.hold-key{position:relative;overflow:hidden;-webkit-touch-callout:none;user-select:none;touch-action:none}
+.hold-key__fill{position:absolute;inset:0 auto 0 0;width:0;background:var(--color-state-danger-deep);opacity:.55}
+.hold-key.is-holding .hold-key__fill{width:100%;transition:width var(--hold-ms) steps(10,end)}
+.hold-key__label{position:relative}
+.hold-help{margin:0;color:var(--color-text-on-night)}
+@media (prefers-reduced-motion:reduce){.hold-key.is-holding .hold-key__fill{transition:width var(--hold-ms) linear}}
+/* ---------- Avisos en Inicio ---------- */
+.aviso{display:flex;gap:12px;align-items:flex-start;margin:20px 20px 0;padding:14px 16px;background:var(--color-brand-cream);color:var(--color-brand-ink);border:3px solid var(--color-brand-ink);box-shadow:0 5px 0 var(--color-brand-orange)}
+.aviso__mark{flex:none;width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:var(--color-brand-orange);border:2px solid var(--color-brand-ink);font:700 20px/1 var(--font-family-display)}
+.aviso__title{margin:0 0 4px;font:700 17px/1.25 var(--font-family-body)}
+.aviso .key{margin-top:10px}
+.home-card__foot{justify-content:flex-end}
+.home-last{margin:12px 0 0;padding:10px 12px;background:var(--color-brand-cream);border:2px dashed var(--color-brand-sand);font:400 14px/1.4 var(--font-family-body);color:var(--color-brand-ink)}
+
+/* Equipos: lista agrupada por cuenta sobre el cielo. */
+.eq-body{display:flex;flex-direction:column;gap:14px;padding:18px 20px 0}
+.eq-chips{margin:0 -20px}
+.eq-chips>[role=group]{flex-wrap:nowrap;overflow-x:auto;gap:10px;padding:4px 20px 8px!important;scrollbar-width:none}
+.eq-chips>[role=group]::-webkit-scrollbar{display:none}
+.eq-chips .filter-chip{flex:none}
+.eq-chips .filter-chip[aria-pressed=true]{background:var(--color-brand-sun);color:var(--color-brand-night)}
+.eq-group{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.eq-group__head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.eq-group__age{font:500 12px/1.3 var(--font-family-mono);color:var(--color-brand-cream);white-space:nowrap}

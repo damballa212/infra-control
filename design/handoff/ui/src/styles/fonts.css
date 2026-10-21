@@ -1,0 +1,85 @@
+/* Fuentes autoalojadas (SIL OFL 1.1; licencias en assets/fonts/*-OFL.txt). font-display: swap. */
+@font-face {
+  font-family: "Pixelify Sans";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("../../../assets/fonts/PixelifySans-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Pixelify Sans";
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url("../../../assets/fonts/PixelifySans-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Pixelify Sans";
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  src: url("../../../assets/fonts/PixelifySans-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Pixelify Sans";
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url("../../../assets/fonts/PixelifySans-700.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Work Sans";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("../../../assets/fonts/WorkSans-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Work Sans";
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url("../../../assets/fonts/WorkSans-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Work Sans";
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  src: url("../../../assets/fonts/WorkSans-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Work Sans";
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url("../../../assets/fonts/WorkSans-700.woff2") format("woff2");
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("../../../assets/fonts/JetBrainsMono-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url("../../../assets/fonts/JetBrainsMono-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  src: url("../../../assets/fonts/JetBrainsMono-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url("../../../assets/fonts/JetBrainsMono-700.woff2") format("woff2");
+}

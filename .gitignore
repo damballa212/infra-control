@@ -1,0 +1,17 @@
+node_modules/
+dist/
+coverage/
+.local/
+.env*
+!.env.example
+*.sqlite*
+playwright-report/
+test-results/
+
+__pycache__/
+*.pyc
+
+# Local configuration and secrets
+config.json
+*.pem
+*.key

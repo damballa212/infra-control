@@ -1,0 +1,47 @@
+{
+  "name": "infra-control-ui-handoff",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Paquete de handoff de la UI de Infra Control (variante D · Pixel atardecer). React + TypeScript estricto.",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "tokens": "node checks/build-tokens.ts",
+    "sprites": "node checks/export-sprites.ts",
+    "dev": "vite --config vite.config.ts",
+    "build": "tsc -p tsconfig.json --noEmit && vite build --config vite.config.ts && node checks/build-service-worker.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "screens": "node checks/capture-screens.ts",
+    "manifest": "node checks/build-manifest.ts",
+    "verify": "npm run tokens && npm run contract && npm test && npm run build",
+    "contract": "tsc --ignoreConfig --noEmit --types node --strict --skipLibCheck --target ES2023 --module ESNext --moduleResolution bundler --allowImportingTsExtensions checks/contract-sync.ts"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.64.1",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.8",
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "jsdom": "^30.1.3",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.5"
+  },
+  "dependencies": {
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "@fontsource/pixelify-sans": "^5.3.0",
+    "@fontsource/work-sans": "^5.3.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "license": "Apache-2.0",
+  "author": "damballa212"
+}
