@@ -1,0 +1,102 @@
+import assert from 'node:assert/strict';
+import { mkdir } from 'node:fs/promises';
+
+// Reuse a local Playwright installation or install playwright-core in this directory.
+const { chromium } = await import(process.env.PLAYWRIGHT_MODULE || 'playwright-core');
+const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || '/snap/bin/chromium', headless: true, args: ['--no-sandbox'] });
+const base = process.env.PROTOTYPE_URL || 'http://127.0.0.1:17611/';
+const output = process.env.CHECK_OUTPUT || '.local/atelier-checks';
+await mkdir(output, { recursive: true });
+let assertions = 0;
+try {
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+  const errors = [];
+  const external = [];
+  page.on('pageerror', e => errors.push(e.message));
+  page.on('request', r => { if (new URL(r.url()).origin !== new URL(base).origin) external.push(r.url()); });
+  await page.coverage.startJSCoverage({ resetOnNavigation: false });
+  await page.goto(base);
+  await page.getByRole('button', { name: 'Cambiar sistema', exact: true }).waitFor({ timeout: 3000 });
+  await page.getByRole('button', { name: 'Cambiar sistema', exact: true }).click();
+  await page.getByRole('button', { name: /Windows 11/ }).click();
+  assert.match(await page.getByRole('dialog').innerText(), /cerrarán/i); assertions++;
+  await page.getByRole('button', { name: 'Cancelar', exact: true }).click();
+  assert.equal(await page.locator('[data-pc-system]').textContent(), 'CachyOS'); assertions++;
+  await page.getByRole('button', { name: 'Cambiar sistema', exact: true }).click();
+  await page.getByRole('button', { name: /Windows 11/ }).click();
+  await page.getByRole('button', { name: 'Confirmar cambio', exact: true }).click();
+  await page.waitForFunction(() => document.querySelector('[data-pc-system]').textContent === 'Windows 11'); assertions++;
+  await page.getByRole('button', { name: 'Apagar PC', exact: true }).click();
+  await page.getByRole('button', { name: 'Confirmar apagado', exact: true }).click();
+  await page.getByRole('button', { name: 'Encender PC', exact: true }).waitFor(); assertions++;
+  await page.getByRole('button', { name: 'Encender PC', exact: true }).click();
+  await page.getByRole('button', { name: 'Apagar PC', exact: true }).waitFor(); assertions++;
+  await page.getByRole('button', { name: 'Leer router', exact: true }).click();
+  await page.waitForFunction(() => document.querySelector('[data-router-time]').textContent.includes('ahora')); assertions++;
+  await page.getByRole('button', { name: 'Actividad', exact: true }).click();
+  assert.match(await page.locator('#view-activity').innerText(), /Windows 11/); assertions++;
+  await page.getByRole('button', { name: 'Equipos', exact: true }).click();
+  await page.getByRole('searchbox').fill('no-existe');
+  assert.match(await page.locator('#view-devices').innerText(), /Sin coincidencias/); assertions++;
+  await page.getByRole('searchbox').fill('Hermes');
+  await page.locator('#device-results').getByRole('button').click();
+  assert.match(await page.getByRole('dialog').innerText(), /aplicaciones/i); assertions++;
+  await page.keyboard.press('Escape');
+  assert.equal(await page.getByRole('dialog').count(), 0); assertions++;
+  await page.getByRole('button', { name: 'Costes', exact: true }).click();
+  assert.match(await page.locator('#view-costs').innerText(), /simulados/i); assertions++;
+  await page.getByRole('button', { name: 'Inicio', exact: true }).click();
+  await page.getByRole('button', { name: 'Ajustes del prototipo', exact: true }).click();
+  await page.getByRole('button', { name: 'Reiniciar demo', exact: true }).click();
+  assert.equal(await page.locator('[data-pc-system]').textContent(), 'CachyOS'); assertions++;
+  await page.getByRole('button', { name: 'Energía', exact: true }).click();
+  assert.match(await page.getByRole('dialog').innerText(), /orquestador/); assertions++;
+  await page.getByRole('button', { name: 'Confirmar apagado', exact: true }).click();
+  await page.waitForFunction(() => document.querySelector('#hermes-state').textContent === 'EC2 detenida'); assertions++;
+  await page.getByRole('button', { name: 'Energía', exact: true }).click();
+  await page.waitForFunction(() => document.querySelector('#hermes-state').textContent === 'EC2 encendida'); assertions++;
+  await page.getByRole('button', { name: 'Consultar', exact: true }).click();
+  assert.equal(await page.locator('#hermes-observed').textContent(), 'Observado ahora'); assertions++;
+  await page.getByRole('button', { name: /MacBook Sin agente/ }).click();
+  assert.match(await page.getByRole('dialog').innerText(), /no significa apagada/i); assertions++;
+  await page.getByRole('button', { name: 'Entendido', exact: true }).click();
+  await page.getByRole('button', { name: /Nube Ver equipos/ }).click();
+  assert.equal(await page.locator('#device-results button').count(), 3); assertions++;
+  await page.getByRole('button', { name: 'Casa', exact: true }).click();
+  await page.locator('#device-results').getByRole('button', { name: /FiberHome/ }).click();
+  await page.getByRole('button', { name: 'Leer estado simulado', exact: true }).click();
+  await page.waitForFunction(() => document.querySelector('#router-button-label').textContent === 'Leer');
+  await page.locator('#device-results').getByRole('button', { name: /PC de casa/ }).click();
+  await page.getByRole('button', { name: 'Ir a los controles', exact: true }).click();
+  await page.getByRole('button', { name: 'Cambiar sistema', exact: true }).click();
+  await page.getByRole('button', { name: /CachyOS Sistema actual/ }).click();
+  assert.equal(await page.getByRole('dialog').count(), 0); assertions++;
+  await page.getByRole('button', { name: 'DEMO', exact: true }).click();
+  await page.getByRole('button', { name: 'Explorar', exact: true }).click();
+  // Reset during a pending operation must cancel delayed callbacks.
+  await page.getByRole('button', { name: 'Apagar PC', exact: true }).click();
+  await page.getByRole('button', { name: 'Confirmar apagado', exact: true }).click();
+  await page.getByRole('button', { name: 'Ajustes del prototipo', exact: true }).click();
+  await page.getByRole('button', { name: 'Reiniciar demo', exact: true }).click();
+  await page.waitForTimeout(1800);
+  assert.equal(await page.locator('[data-pc-state]').textContent(), 'En línea'); assertions++;
+  // Clean screenshot state after the reset toast disappears.
+  await page.locator('#toast').waitFor({ state: 'hidden' });
+  for (const width of [320, 390, 834, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `overflow at ${width}`); assertions++;
+    await page.screenshot({ path: `${output}/atelier-${width}.png`, fullPage: true });
+  }
+  assert.deepEqual(errors, []); assertions++;
+  assert.deepEqual(external, []); assertions++;
+  const coverage = (await page.coverage.stopJSCoverage()).find((entry) => entry.url.endsWith('/app.js'));
+  const covered = new Uint8Array(coverage.source.length);
+  const ranges = coverage.functions.flatMap((fn) => fn.ranges).sort((a, b) => (b.endOffset - b.startOffset) - (a.endOffset - a.startOffset));
+  for (const range of ranges) covered.fill(range.count > 0 ? 1 : 0, range.startOffset, range.endOffset);
+  const ratio = covered.reduce((sum, value) => sum + value, 0) / covered.length;
+  assert.ok(ratio >= 0.8, 'Prototype JS byte coverage below 80%');
+  console.log(`Prototype JS byte coverage: ${(100 * ratio).toFixed(1)}% (not line/branch coverage)`);
+  console.log(`PASS: ${assertions} interaction, viewport and isolation checks.`);
+} finally {
+  await browser.close();
+}

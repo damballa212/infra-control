@@ -1,0 +1,3245 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Infra Control",
+    "version": "0.1.0",
+    "description": "API privada compartida por PWA y agentes. Operaciones asíncronas e idempotentes. Nunca asumir éxito por HTTP 202."
+  },
+  "servers": [
+    {
+      "url": "https://panel.example.com"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "OperationReview": {
+        "type": "object",
+        "required": [
+          "disposition",
+          "version",
+          "canonicalResourceId",
+          "updatedAt",
+          "reason",
+          "evidence"
+        ],
+        "properties": {
+          "disposition": {
+            "enum": [
+              "pending",
+              "reviewed",
+              "superseded"
+            ]
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "canonicalResourceId": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "supersededByOperationId": {
+            "type": "string"
+          },
+          "reviewedBy": {
+            "type": "string"
+          },
+          "reviewedAt": {
+            "type": "string"
+          },
+          "evidence": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "enum": [
+                  "execution_result",
+                  "later_confirmed_power",
+                  "human_review"
+                ]
+              },
+              "operationId": {
+                "type": "string"
+              },
+              "action": {
+                "type": "string"
+              },
+              "confirmedAt": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "Operation": {
+        "type": "object",
+        "required": [
+          "id",
+          "resourceId",
+          "resourceName",
+          "action",
+          "actor",
+          "state",
+          "message",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": "string"
+          },
+          "resourceName": {
+            "type": "string"
+          },
+          "action": {
+            "enum": [
+              "start",
+              "stop",
+              "refresh",
+              "boot-windows",
+              "boot-cachyos"
+            ]
+          },
+          "actor": {
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "accepted",
+              "running",
+              "succeeded",
+              "failed",
+              "uncertain"
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "review": {
+            "$ref": "#/components/schemas/OperationReview"
+          }
+        }
+      },
+      "IncidentSourceContext": {
+        "type": "object",
+        "required": [
+          "eventIds"
+        ],
+        "description": "Procedencia retenida del incidente; no concede permisos. No inferir identidad a partir de etiquetas.",
+        "properties": {
+          "eventIds": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "uniqueItems": true,
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "resourceId": {
+            "type": "string"
+          },
+          "catalogId": {
+            "type": "string"
+          },
+          "scopeKey": {
+            "type": "string"
+          },
+          "conflict": {
+            "const": true
+          }
+        }
+      },
+      "OperationalIncident": {
+        "type": "object",
+        "required": [
+          "id",
+          "key",
+          "component",
+          "resourceId",
+          "canonicalResourceId",
+          "kind",
+          "source",
+          "status",
+          "actionable",
+          "openedAt",
+          "updatedAt",
+          "version",
+          "evidence"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "component": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "canonicalResourceId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "connectionId": {
+            "type": "string"
+          },
+          "scopeKey": {
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "account": {
+            "type": "string"
+          },
+          "budgetName": {
+            "type": "string"
+          },
+          "sourceContext": {
+            "$ref": "#/components/schemas/IncidentSourceContext"
+          },
+          "category": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "application",
+              "observability",
+              "availability",
+              "coverage",
+              "budget",
+              "change"
+            ]
+          },
+          "source": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "open",
+              "unknown",
+              "resolved",
+              "information"
+            ]
+          },
+          "actionable": {
+            "type": "boolean"
+          },
+          "openedAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "resolvedAt": {
+            "type": "string"
+          },
+          "openingEventId": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "lastEventId": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "recoveryEventId": {
+            "type": "integer"
+          },
+          "version": {
+            "type": "integer"
+          },
+          "evidence": {
+            "type": "object",
+            "properties": {
+              "reasonCode": {
+                "type": "string"
+              },
+              "observedAt": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              }
+            }
+          },
+          "acknowledgement": {
+            "type": "object",
+            "properties": {
+              "by": {
+                "type": "string"
+              },
+              "at": {
+                "type": "string"
+              },
+              "reportVersion": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "SecretRequest": {
+        "type": "object",
+        "description": "Metadatos públicos de solicitud; nunca valores ni item_ref.",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "agent": {
+            "type": "string"
+          },
+          "machine": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "project": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "type": "string"
+          }
+        }
+      },
+      "SecretGrant": {
+        "type": "object",
+        "description": "Permiso sin referencia privada de bóveda.",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "agent": {
+            "type": "string"
+          },
+          "machine": {
+            "type": "string"
+          },
+          "project": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "scope": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        }
+      },
+      "SecretAuditEvent": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "at": {
+            "type": "string"
+          },
+          "requestId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "event": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "string"
+          }
+        }
+      },
+      "AttentionSummary": {
+        "type": "object",
+        "description": "Conteos autorizados de todo el trabajo actual; attentionGroups agrupa revisiones e incidentes por identidad física o scope. ACK no significa recuperación.",
+        "properties": {
+          "fetchedAt": {
+            "type": "string"
+          },
+          "counts": {
+            "type": "object",
+            "properties": {
+              "attentionGroups": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "active": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "pendingReviews": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "openIncidents": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "unknownIncidents": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "coverageProblems": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          },
+          "coverage": {
+            "type": "object"
+          },
+          "pendingApprovals": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "CatalogIdentity": {
+        "type": "object",
+        "required": [
+          "catalogId",
+          "provider",
+          "accountId",
+          "region",
+          "resourceType",
+          "providerId",
+          "lifecycle"
+        ],
+        "properties": {
+          "catalogId": {
+            "type": "string"
+          },
+          "provider": {
+            "enum": [
+              "aws",
+              "coolify",
+              "host"
+            ]
+          },
+          "accountId": {
+            "type": "string",
+            "description": "Para host: UUID opaco de enrollment; nunca machine-id, fingerprint ni ruta."
+          },
+          "region": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "providerId": {
+            "type": "string"
+          },
+          "lifecycle": {
+            "enum": [
+              "active",
+              "candidate_missing",
+              "retired"
+            ]
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "project": {
+            "type": "string"
+          },
+          "environment": {
+            "type": "string"
+          }
+        }
+      },
+      "HostMetricsSnapshot": {
+        "type": "object",
+        "description": "Métricas observadas; campos desconocidos se omiten o conservan null. observedAt pertenece a cada medición.",
+        "properties": {
+          "cpu": {
+            "type": "object",
+            "required": [
+              "percent",
+              "observedAt"
+            ],
+            "properties": {
+              "percent": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "observedAt": {
+                "type": "string"
+              }
+            }
+          },
+          "memory": {
+            "type": "object",
+            "required": [
+              "usedBytes",
+              "totalBytes",
+              "utilizationPercent",
+              "observedAt"
+            ],
+            "properties": {
+              "usedBytes": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "totalBytes": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "utilizationPercent": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "observedAt": {
+                "type": "string"
+              }
+            }
+          },
+          "filesystems": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "device",
+                "mountpoint",
+                "utilizationPercent",
+                "observedAt"
+              ],
+              "properties": {
+                "device": {
+                  "type": "string"
+                },
+                "mountpoint": {
+                  "type": "string"
+                },
+                "utilizationPercent": {
+                  "type": "number"
+                },
+                "observedAt": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "network": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string"
+                },
+                "receivedBytes": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "sentBytes": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "observedAt": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Resource": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "kind",
+          "state",
+          "location",
+          "account",
+          "detail",
+          "actions",
+          "observedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "ec2",
+              "service",
+              "router",
+              "computer"
+            ]
+          },
+          "state": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "account": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "start",
+                "stop",
+                "refresh",
+                "boot-windows",
+                "boot-cachyos"
+              ]
+            },
+            "description": "Autoridad para controles; siempre vacío para provider host."
+          },
+          "observedAt": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "stateChangedAt": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "note": {
+            "type": "string"
+          },
+          "system": {
+            "enum": [
+              "windows",
+              "cachyos"
+            ]
+          },
+          "catalog": {
+            "$ref": "#/components/schemas/CatalogIdentity"
+          },
+          "hostMetrics": {
+            "$ref": "#/components/schemas/HostMetricsSnapshot"
+          },
+          "health": {
+            "type": "object",
+            "description": "Señales independientes con source/observedAt/freshUntil. Docker running no acredita healthy; ausencia de archivo no acredita apagado."
+          },
+          "coverage": {
+            "type": "object",
+            "properties": {
+              "state": {
+                "enum": [
+                  "healthy",
+                  "partial",
+                  "failed",
+                  "unknown"
+                ]
+              },
+              "observedAt": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "freshUntil": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          },
+          "serviceSignals": {
+            "type": "object"
+          },
+          "actionAvailability": {
+            "type": "object"
+          },
+          "monitoring": {
+            "type": "object"
+          }
+        }
+      },
+      "ResourcesSnapshot": {
+        "type": "object",
+        "required": [
+          "resources",
+          "fetchedAt",
+          "refreshSeconds",
+          "cursor"
+        ],
+        "properties": {
+          "resources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Resource"
+            }
+          },
+          "fetchedAt": {
+            "type": "string"
+          },
+          "refreshSeconds": {
+            "type": "integer"
+          },
+          "cursor": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]{48}$"
+              }
+            ],
+            "description": "Numérico para la sesión personal y los agentes sin readPolicy. Opaco para las credenciales con readPolicy."
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/mcp": {
+      "post": {
+        "summary": "Servidor MCP Streamable HTTP stateless; Bearer privado, Host exacto y Origin exacto cuando se envía",
+        "description": "Tools visibles dependen de scopes y mcpTools del token. readPolicy limita los datos. MCP solo lee caché de costes. plan_operation y execute_operation requieren operate y operationPolicy explícita.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Mensaje JSON-RPC 2.0 MCP; initialize, tools/list o tools/call"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Respuesta JSON-RPC o stream SSE de MCP"
+          },
+          "400": {
+            "description": "Mensaje MCP no válido"
+          },
+          "401": {
+            "description": "Bearer no válido"
+          },
+          "403": {
+            "description": "Scope, tool o política de operación insuficiente"
+          },
+          "421": {
+            "description": "Host distinto del origen configurado"
+          }
+        }
+      }
+    },
+    "/api/events": {
+      "get": {
+        "summary": "SSE autenticado con historial durable, sin polling por cliente",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Last-Event-ID",
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{48}$"
+                }
+              ],
+              "description": "Numérico para la sesión personal y los agentes sin readPolicy. Opaco para las credenciales con readPolicy."
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{48}$"
+                }
+              ],
+              "description": "Numérico para la sesión personal y los agentes sin readPolicy. Opaco para las credenciales con readPolicy."
+            },
+            "description": "Cursor de GET /api/resources. Last-Event-ID tiene precedencia. Un cursor opaco caduca al reiniciar el proceso o cambiar la credencial o su política; solicita un snapshot nuevo si recibes 400."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Eventos desktop/resource/operation/incident/coverage; cobertura solo al cambiar un scope autorizado. Las transiciones de salud HTTPS son durables y las muestras de telemetría se transmiten sin cursor. El snapshot al reconectar contiene las señales actuales; resync indica cursor fuera de ventana."
+          },
+          "400": {
+            "description": "Cursor inválido"
+          },
+          "503": {
+            "description": "Límite de conexiones"
+          }
+        }
+      }
+    },
+    "/api/desktop/events": {
+      "post": {
+        "summary": "Avisos salientes del PC; requiere token exclusivo del SO, sin permisos de lectura u operación",
+        "responses": {
+          "204": {
+            "description": "Aviso aceptado"
+          },
+          "400": {
+            "description": "bootId, sequence o event inválido"
+          },
+          "401": {
+            "description": "Dispositivo no autorizado"
+          },
+          "409": {
+            "description": "Secuencia o arranque anterior"
+          }
+        }
+      }
+    },
+    "/api/aws/events": {
+      "post": {
+        "summary": "Ingesta durable autenticada por cuenta de eventos EC2 State-change de EventBridge; no ejecuta operaciones ni espera consultas AWS",
+        "security": [],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-infra-control-token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Evento guardado en el inbox; duplicados son idempotentes"
+          },
+          "400": {
+            "description": "Envelope, estado o fecha inválidos"
+          },
+          "401": {
+            "description": "Token de cuenta incorrecto"
+          },
+          "403": {
+            "description": "Cuenta AWS no conectada"
+          },
+          "409": {
+            "description": "Mismo event ID con contenido distinto"
+          },
+          "429": {
+            "description": "Límite de tasa; EventBridge reintentará"
+          },
+          "503": {
+            "description": "Scope sin cobertura o persistencia temporalmente indisponible"
+          }
+        }
+      }
+    },
+    "/api/desktop/commands": {
+      "get": {
+        "summary": "Canal de órdenes iniciado por la PC (long-poll hasta 25 s): 200 con una orden de la lista cerrada, 204 si no hay; token exclusivo del SO",
+        "security": [],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "wait",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 25
+            }
+          },
+          {
+            "in": "query",
+            "name": "caps",
+            "schema": {
+              "type": "string",
+              "description": "Capacidades que el agente sabe ejecutar: ping, power, boot-default"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Orden {id, command, expectedBootId, issuedAt}"
+          },
+          "204": {
+            "description": "Sin órdenes"
+          },
+          "401": {
+            "description": "Dispositivo no autorizado"
+          }
+        }
+      }
+    },
+    "/api/desktop/commands/{id}/ack": {
+      "post": {
+        "summary": "Confirmación o rechazo de una orden entregada; el bootId debe coincidir con el esperado",
+        "security": [],
+        "responses": {
+          "204": {
+            "description": "Confirmación aceptada"
+          },
+          "400": {
+            "description": "Confirmación no válida"
+          },
+          "401": {
+            "description": "Dispositivo no autorizado"
+          },
+          "409": {
+            "description": "La orden ya no está vigente o el bootId no coincide"
+          }
+        }
+      }
+    },
+    "/api/mac/events": {
+      "post": {
+        "summary": "Reporter saliente de presencia y avisos best-effort de reposo/despertar del Mac; token exclusivo, sin permiso de lectura ni operación",
+        "security": [],
+        "responses": {
+          "204": {
+            "description": "Aviso aceptado o repetición exacta"
+          },
+          "400": {
+            "description": "Aviso inválido"
+          },
+          "401": {
+            "description": "Token exclusivo inválido"
+          },
+          "409": {
+            "description": "Secuencia o bootId anterior"
+          },
+          "503": {
+            "description": "Reporter no configurado"
+          }
+        }
+      }
+    },
+    "/api/mac/health": {
+      "get": {
+        "summary": "Snapshot local de presencia del Mac; no hace SSH al dispositivo",
+        "responses": {
+          "200": {
+            "description": "resource, telemetría reciente o null, fetchedAt; presencia stale tras 90 s"
+          }
+        }
+      }
+    },
+    "/api/hermes/events": {
+      "post": {
+        "summary": "Heartbeat saliente del estado systemd; token exclusivo, sin acceso a chats ni órdenes",
+        "security": [],
+        "responses": {
+          "204": {
+            "description": "Muestra aceptada"
+          },
+          "400": {
+            "description": "Muestra fuera del contrato"
+          },
+          "401": {
+            "description": "Token exclusivo inválido"
+          },
+          "409": {
+            "description": "Secuencia anterior o stream retirado"
+          },
+          "503": {
+            "description": "Reporter no configurado"
+          }
+        }
+      }
+    },
+    "/api/telemetry/otlp/v1/metrics": {
+      "post": {
+        "summary": "Ingesta OTLP/HTTP JSON saliente por host; credencial exclusiva y host.id ligado a un recurso",
+        "security": [],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer <token exclusivo del host>"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "resourceMetrics"
+                ],
+                "description": "Muestra limitada a CPU, memoria, filesystem y red; máximo64 KiB,8 resourceMetrics de una sola identidad,64 métricas y512 datapoints."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Muestra aceptada e incluida en snapshot/SSE sin cursor durable"
+          },
+          "400": {
+            "description": "Payload, timestamp o métricas fuera de límites"
+          },
+          "401": {
+            "description": "Credencial del host no registrada"
+          },
+          "403": {
+            "description": "host.id no coincide con la credencial"
+          },
+          "413": {
+            "description": "Payload mayor que64 KiB"
+          },
+          "415": {
+            "description": "Content-Type debe ser application/json"
+          },
+          "429": {
+            "description": "Límite por credencial o IP"
+          },
+          "503": {
+            "description": "Ingesta no configurada o persistencia temporalmente indisponible"
+          }
+        }
+      }
+    },
+    "/api/hermes/health": {
+      "get": {
+        "summary": "Última observación systemd de Hermes; no consulta la instancia EC2",
+        "responses": {
+          "200": {
+            "description": "telemetry con estado de unidad y vencimiento a 45 s, o null"
+          }
+        }
+      }
+    },
+    "/api/system/health": {
+      "get": {
+        "summary": "Estado de observadores, cobertura, colas, panel e integraciones; sin sondeos adicionales por cliente",
+        "responses": {
+          "200": {
+            "description": "Diagnóstico redactado y filtrado por readPolicy, sin inventario, destinos de sonda ni secretos; incluye cobertura HTTPS agregada si se configura."
+          }
+        }
+      }
+    },
+    "/api/router/check": {
+      "post": {
+        "summary": "Comprueba una vez el túnel privado del FiberHome; compartido durante 10 s y sin consultar PC, ACS, WAN o Internet",
+        "responses": {
+          "200": {
+            "description": "probe, resource y cached; una respuesta negativa no significa router apagado ni Internet caída"
+          },
+          "401": {
+            "description": "Autenticación requerida"
+          },
+          "403": {
+            "description": "Agente sin política explícita de refresh sobre el router"
+          },
+          "429": {
+            "description": "Máximo seis comprobaciones por minuto"
+          },
+          "503": {
+            "description": "Sondeo no configurado o broker local inaccesible; no se altera el estado observado del túnel"
+          }
+        }
+      }
+    },
+    "/api/push/config": {
+      "get": {
+        "summary": "Clave VAPID pública y disponibilidad; no revela credenciales",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "enabled, vapidPublicKey"
+          }
+        }
+      }
+    },
+    "/api/push/status": {
+      "get": {
+        "summary": "Estado de la cola y número de suscripciones de la sesión humana",
+        "responses": {
+          "200": {
+            "description": "enabled, subscriptions, pending, dead"
+          }
+        }
+      }
+    },
+    "/api/secrets/requests": {
+      "get": {
+        "summary": "Página autorizada de requests",
+        "description": "Orden estable descendente por inserción. Visibilidad antes de límite; cursor cifrado ligado a ruta, filtros y autoridad, válido 30 minutos. Los cambios nuevos no entran en páginas de una consulta ya iniciada. No se publica un total inventado.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "actor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "resourceId",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "view",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Página y continuación real.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "requests",
+                    "nextCursor",
+                    "hasMore"
+                  ],
+                  "properties": {
+                    "requests": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SecretRequest"
+                      }
+                    },
+                    "nextCursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "hasMore": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Cursor, límite o filtros inválidos; cursor ligado al alcance actual."
+          },
+          "401": {
+            "description": "Autenticación requerida."
+          },
+          "403": {
+            "description": "Decisión reservada a sesión humana con Origin exacto."
+          }
+        }
+      },
+      "post": {
+        "summary": "Un agente con secretsPolicy pide una credencial; Idempotency-Key obligatoria",
+        "responses": {
+          "201": {
+            "description": "Solicitud pendiente con url de aprobación; o aprobada si existe un permiso permanente vigente"
+          },
+          "400": {
+            "description": "Entrada o destino no válidos"
+          },
+          "403": {
+            "description": "Proyecto o variable fuera de la política del token"
+          },
+          "409": {
+            "description": "Idempotency-Key reutilizada con otra carga"
+          },
+          "503": {
+            "description": "Bóveda no configurada"
+          }
+        }
+      }
+    },
+    "/api/secrets/requests/{id}": {
+      "get": {
+        "summary": "Estado de una solicitud; un agente solo ve las suyas",
+        "responses": {
+          "200": {
+            "description": "Solicitud sin valor"
+          },
+          "404": {
+            "description": "No existe o es de otro agente"
+          }
+        }
+      }
+    },
+    "/api/secrets/requests/{id}/approve": {
+      "post": {
+        "summary": "Sesión personal con Origin exacto: pegar un valor (se guarda en la bóveda) o elegir un ítem existente; alcance once, machine_project o always",
+        "responses": {
+          "200": {
+            "description": "Solicitud aprobada, sin valor"
+          },
+          "409": {
+            "description": "Ya no está pendiente"
+          },
+          "422": {
+            "description": "El ítem no existe en la colección del proyecto"
+          },
+          "502": {
+            "description": "Bóveda no disponible"
+          }
+        }
+      }
+    },
+    "/api/secrets/requests/{id}/deny": {
+      "post": {
+        "summary": "Deniega una solicitud pendiente (sesión personal con Origin exacto)",
+        "responses": {
+          "200": {
+            "description": "Solicitud denegada"
+          },
+          "409": {
+            "description": "Ya no está pendiente"
+          }
+        }
+      }
+    },
+    "/api/secrets/requests/{id}/claim": {
+      "post": {
+        "summary": "El agente solicitante reclama el valor una sola vez; Cache-Control no-store",
+        "responses": {
+          "200": {
+            "description": "name, value y destination"
+          },
+          "409": {
+            "description": "No está aprobada, ya se entregó o venció"
+          },
+          "502": {
+            "description": "La bóveda no entregó el valor; la solicitud queda failed"
+          }
+        }
+      }
+    },
+    "/api/secrets/items": {
+      "get": {
+        "summary": "Metadatos (sin valores) de los ítems de la colección proyecto/entorno para elegir uno existente",
+        "responses": {
+          "200": {
+            "description": "items con itemRef, name y updatedAt"
+          }
+        }
+      }
+    },
+    "/api/secrets/grants": {
+      "get": {
+        "summary": "Página autorizada de grants",
+        "description": "Orden estable descendente por inserción. Visibilidad antes de límite; cursor cifrado ligado a ruta, filtros y autoridad, válido 30 minutos. Los cambios nuevos no entran en páginas de una consulta ya iniciada. No se publica un total inventado.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "actor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "resourceId",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "view",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Página y continuación real.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "grants",
+                    "nextCursor",
+                    "hasMore"
+                  ],
+                  "properties": {
+                    "grants": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SecretGrant"
+                      }
+                    },
+                    "nextCursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "hasMore": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Cursor, límite o filtros inválidos; cursor ligado al alcance actual."
+          },
+          "401": {
+            "description": "Autenticación requerida."
+          },
+          "403": {
+            "description": "Decisión reservada a sesión humana con Origin exacto."
+          }
+        }
+      }
+    },
+    "/api/secrets/available": {
+      "get": {
+        "summary": "Un agente con secretsPolicy consulta los nombres de variables guardados en la colección proyecto/entorno (sin valores ni referencias). Con secretsPolicy.autoDeliver, pedir uno de esos nombres se aprueba solo para una entrega",
+        "responses": {
+          "200": {
+            "description": "items: name y updatedAt"
+          },
+          "400": {
+            "description": "Proyecto o entorno no válido"
+          },
+          "403": {
+            "description": "Sesión personal, token sin secretsPolicy o proyecto fuera de su política"
+          },
+          "502": {
+            "description": "La bóveda no respondió"
+          },
+          "503": {
+            "description": "Bóveda no configurada"
+          }
+        }
+      }
+    },
+    "/api/secrets/grants/{id}": {
+      "delete": {
+        "summary": "Revoca un permiso permanente (no revoca la credencial en el proveedor)",
+        "responses": {
+          "200": {
+            "description": "revoked: true"
+          },
+          "404": {
+            "description": "No existe"
+          }
+        }
+      }
+    },
+    "/api/secrets/audit": {
+      "get": {
+        "summary": "Página autorizada de events",
+        "description": "Orden estable descendente por inserción. Visibilidad antes de límite; cursor cifrado ligado a ruta, filtros y autoridad, válido 30 minutos. Los cambios nuevos no entran en páginas de una consulta ya iniciada. No se publica un total inventado.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "actor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "resourceId",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "view",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Página y continuación real.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "events",
+                    "nextCursor",
+                    "hasMore"
+                  ],
+                  "properties": {
+                    "events": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SecretAuditEvent"
+                      }
+                    },
+                    "nextCursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "hasMore": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Cursor, límite o filtros inválidos; cursor ligado al alcance actual."
+          },
+          "401": {
+            "description": "Autenticación requerida."
+          },
+          "403": {
+            "description": "Decisión reservada a sesión humana con Origin exacto."
+          }
+        }
+      }
+    },
+    "/api/push/subscriptions": {
+      "get": {
+        "summary": "Suscripciones de la sesión humana sin incluir endpoints ni claves",
+        "responses": {
+          "200": {
+            "description": "subscriptions y preferencias"
+          }
+        }
+      },
+      "post": {
+        "summary": "Registrar suscripción validada de navegador para esta cuenta",
+        "responses": {
+          "201": {
+            "description": "Dispositivo registrado; endpoints se cifran en SQLite"
+          },
+          "400": {
+            "description": "Suscripción o proveedor no permitido"
+          },
+          "403": {
+            "description": "La gestión requiere sesión humana y mismo origen"
+          },
+          "409": {
+            "description": "Límite de dispositivos alcanzado"
+          },
+          "503": {
+            "description": "VAPID no configurado"
+          }
+        }
+      }
+    },
+    "/api/push/subscriptions/{id}/preferences": {
+      "put": {
+        "summary": "Actualizar preferencias solo del dispositivo de la sesión humana",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Preferencias guardadas"
+          },
+          "404": {
+            "description": "Dispositivo no encontrado"
+          }
+        }
+      }
+    },
+    "/api/push/subscriptions/{id}/test": {
+      "post": {
+        "summary": "Encolar una prueba no sensible para este dispositivo; no confirma recepción",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Encolada con TTL de60s; comprobar el dispositivo"
+          },
+          "403": {
+            "description": "Solo sesión humana"
+          },
+          "404": {
+            "description": "Dispositivo no encontrado"
+          },
+          "429": {
+            "description": "Una prueba por minuto"
+          },
+          "503": {
+            "description": "VAPID no configurado"
+          }
+        }
+      }
+    },
+    "/api/push/subscriptions/{id}": {
+      "delete": {
+        "summary": "Revocar suscripción y eliminar su cola asociada",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Revocada"
+          },
+          "404": {
+            "description": "Dispositivo no encontrado"
+          }
+        }
+      }
+    },
+    "/api/desktop/boot-preference": {
+      "get": {
+        "summary": "Preferencia física deseada y último valor UEFI observado; lee SQLite",
+        "responses": {
+          "200": {
+            "description": "desired, effective, state, version, requestedAt, observedAt, verifiedAt"
+          }
+        }
+      },
+      "post": {
+        "summary": "Cambiar el default UEFI sin encender ni reiniciar; si la PC no responde queda pendiente",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "system",
+                  "confirmed",
+                  "expectedVersion"
+                ],
+                "properties": {
+                  "system": {
+                    "enum": [
+                      "windows",
+                      "cachyos"
+                    ]
+                  },
+                  "confirmed": {
+                    "const": true
+                  },
+                  "expectedVersion": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default aplicado y leído de vuelta desde el firmware"
+          },
+          "202": {
+            "description": "Intención pendiente u operación incierta; revisar antes de reintentar"
+          },
+          "400": {
+            "description": "Sistema, confirmación, versión o clave no válida"
+          },
+          "403": {
+            "description": "Agente sin permiso para ese sistema y la PC"
+          },
+          "409": {
+            "description": "Versión vencida, operación PC activa o replay de una operación UEFI fallida"
+          },
+          "503": {
+            "description": "Compuerta activa o controlador sin capacidad"
+          }
+        }
+      }
+    },
+    "/api/desktop/boot-preference/pending": {
+      "delete": {
+        "summary": "Cancelar una intención pendiente antes de aplicarla",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "expectedVersion"
+                ],
+                "properties": {
+                  "expectedVersion": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Intención cancelada"
+          },
+          "400": {
+            "description": "Versión inválida"
+          },
+          "409": {
+            "description": "No está pendiente o la versión cambió"
+          }
+        }
+      }
+    },
+    "/api/desktop/boot-preference/verify": {
+      "get": {
+        "summary": "Leer el orden UEFI actual por SSH autenticado; no escribe ni corrige drift",
+        "responses": {
+          "200": {
+            "description": "Último default físico leído y estado comparado con desired"
+          },
+          "409": {
+            "description": "Operación PC activa o estado cambiado durante la lectura"
+          },
+          "503": {
+            "description": "PC/controlador no disponible o lectura no verificable"
+          }
+        }
+      }
+    },
+    "/api/router/health": {
+      "get": {
+        "summary": "Snapshot local de salud del FiberHome; no consulta ACS, router ni PC",
+        "responses": {
+          "200": {
+            "description": "resource, última telemetría, último probe SSH fresco o null, fetchedAt"
+          },
+          "401": {
+            "description": "Autenticación requerida"
+          }
+        }
+      }
+    },
+    "/api/router/telemetry": {
+      "post": {
+        "summary": "Ingesta privada de métricas ligeras por el túnel SSH",
+        "security": [],
+        "responses": {
+          "204": {
+            "description": "Muestra aceptada o repetición exacta idempotente"
+          },
+          "400": {
+            "description": "Métrica fuera de contrato"
+          },
+          "401": {
+            "description": "Token exclusivo de telemetría inválido"
+          },
+          "409": {
+            "description": "Secuencia o generación retirada"
+          },
+          "503": {
+            "description": "Telemetría no configurada"
+          }
+        }
+      }
+    },
+    "/api/resources": {
+      "get": {
+        "summary": "Inventario compartido y capacidades actuales",
+        "description": "El proveedor host es de solo lectura: cadencia60s, TTL180s y accountId UUID opaco. Presencia, métricas y Docker conservan fechas propias. Consultar no lee el socket Docker ni inicia el productor. Un grant del host no incluye contenedores ni conteos Docker.",
+        "responses": {
+          "200": {
+            "description": "Snapshot autorizado con fechas originales; fetchedAt no renueva observaciones. cursor sincroniza SSE.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourcesSnapshot"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/catalog/connections": {
+      "get": {
+        "summary": "Conexiones de proveedor sin credenciales",
+        "responses": {
+          "200": {
+            "description": "provider, cuenta, nombre y estado, sin claves ni tokens"
+          }
+        }
+      }
+    },
+    "/api/catalog/scopes": {
+      "get": {
+        "summary": "Cobertura de reconciliación por cuenta y región",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "history",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            },
+            "description": "Solo una sesión personal puede incluir conexiones suspendidas; conserva readPolicy."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cobertura actual de conexiones activas. Para Docker, los permisos por recurso proyectan solo evidencia y conteos visibles, con errorCode nulo y generation 0. Los eventos SSE de cobertura Docker requieren acceso a la conexión o cuenta. history=true permite la lectura histórica personal autorizada."
+          }
+        }
+      }
+    },
+    "/api/catalog/projects": {
+      "get": {
+        "summary": "Proyectos explícitos derivados de tags y sus entornos observados",
+        "responses": {
+          "200": {
+            "description": "Relaciones lógicas sin agrupar recursos por nombre"
+          }
+        }
+      }
+    },
+    "/api/catalog/services": {
+      "get": {
+        "summary": "Servicios lógicos y relaciones explícitas con recursos físicos",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "history",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            },
+            "description": "Solo una sesión personal puede incluir relaciones históricas; conserva readPolicy."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Las relaciones actuales excluyen conexiones suspendidas, incluso con aliases sin resolver. La lectura histórica personal mantiene la autorización por relación."
+          }
+        }
+      }
+    },
+    "/api/catalog/resources": {
+      "get": {
+        "summary": "Catálogo persistente y estado de ciclo de vida",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "history",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recursos observados con lifecycle; las bajas conservan historia y requieren history=true"
+          }
+        }
+      }
+    },
+    "/api/costs": {
+      "get": {
+        "summary": "Costes y presupuestos; humanos consultan bajo demanda con caché 24 h, agentes solo leen la caché y sus cuentas permitidas",
+        "responses": {
+          "200": {
+            "description": "accounts, fetchedAt, nextRefreshAt y policy; null/unavailable no representa cero"
+          },
+          "403": {
+            "description": "Token sin permiso de costes"
+          }
+        }
+      }
+    },
+    "/api/operations": {
+      "get": {
+        "summary": "Página autorizada de operations",
+        "description": "Orden estable descendente por inserción. Visibilidad antes de límite; cursor cifrado ligado a ruta, filtros y autoridad, válido 30 minutos. Los cambios nuevos no entran en páginas de una consulta ya iniciada. No se publica un total inventado.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "actor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "resourceId",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "view",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Página y continuación real.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "operations",
+                    "nextCursor",
+                    "hasMore"
+                  ],
+                  "properties": {
+                    "operations": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Operation"
+                      }
+                    },
+                    "nextCursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "hasMore": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Cursor, límite o filtros inválidos; cursor ligado al alcance actual."
+          },
+          "401": {
+            "description": "Autenticación requerida."
+          },
+          "403": {
+            "description": "Decisión reservada a sesión humana con Origin exacto."
+          }
+        }
+      },
+      "post": {
+        "summary": "Ejecutar una capacidad anunciada por el recurso con autorización compartida REST/MCP",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "resourceId",
+                  "action"
+                ],
+                "properties": {
+                  "resourceId": {
+                    "type": "string"
+                  },
+                  "action": {
+                    "enum": [
+                      "start",
+                      "stop",
+                      "refresh",
+                      "boot-windows",
+                      "boot-cachyos"
+                    ]
+                  },
+                  "confirmed": {
+                    "type": "boolean",
+                    "description": "Obligatorio true para todas las acciones salvo refresh."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Orden registrada; consultar su estado hasta succeeded, failed o uncertain"
+          },
+          "400": {
+            "description": "Orden o capacidad no válida"
+          },
+          "403": {
+            "description": "Agente sin policy explícita para la acción y recurso"
+          },
+          "409": {
+            "description": "Conflicto de idempotencia u operación en curso"
+          },
+          "429": {
+            "description": "Esperar Retry-After"
+          },
+          "503": {
+            "description": "Compuerta de despliegue activa; respetar Retry-After"
+          }
+        }
+      }
+    },
+    "/api/operations/{id}": {
+      "get": {
+        "summary": "Resultado verificable de una orden",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operation: id, actor, resourceId, action, state, message, createdAt, updatedAt"
+          },
+          "404": {
+            "description": "No existe"
+          }
+        }
+      }
+    },
+    "/api/operations/{id}/history": {
+      "get": {
+        "summary": "Transiciones durables de una orden",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{ events: [{ id, type, aggregateId, payload, createdAt }] }. Con readPolicy, los identificadores globales de evento se redactan y el id de la fila es null."
+          },
+          "404": {
+            "description": "No existe"
+          }
+        }
+      }
+    },
+    "/api/operations/active": {
+      "get": {
+        "summary": "Página autorizada de operations",
+        "description": "Orden estable descendente por inserción. Visibilidad antes de límite; cursor cifrado ligado a ruta, filtros y autoridad, válido 30 minutos. Los cambios nuevos no entran en páginas de una consulta ya iniciada. No se publica un total inventado.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "actor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "resourceId",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "view",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Página y continuación real.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "operations",
+                    "nextCursor",
+                    "hasMore"
+                  ],
+                  "properties": {
+                    "operations": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Operation"
+                      }
+                    },
+                    "nextCursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "hasMore": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Cursor, límite o filtros inválidos; cursor ligado al alcance actual."
+          },
+          "401": {
+            "description": "Autenticación requerida."
+          },
+          "403": {
+            "description": "Decisión reservada a sesión humana con Origin exacto."
+          }
+        }
+      }
+    },
+    "/api/operations/review": {
+      "get": {
+        "summary": "Página autorizada de operations",
+        "description": "Orden estable descendente por inserción. Visibilidad antes de límite; cursor cifrado ligado a ruta, filtros y autoridad, válido 30 minutos. Los cambios nuevos no entran en páginas de una consulta ya iniciada. No se publica un total inventado.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "actor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "resourceId",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "view",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Página y continuación real.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "operations",
+                    "nextCursor",
+                    "hasMore"
+                  ],
+                  "properties": {
+                    "operations": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Operation"
+                      }
+                    },
+                    "nextCursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "hasMore": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Cursor, límite o filtros inválidos; cursor ligado al alcance actual."
+          },
+          "401": {
+            "description": "Autenticación requerida."
+          },
+          "403": {
+            "description": "Decisión reservada a sesión humana con Origin exacto."
+          }
+        }
+      }
+    },
+    "/api/operations/{id}/review": {
+      "post": {
+        "summary": "Marcar revisada una ejecución incierta o fallida; nunca modifica su resultado.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "expectedVersion",
+                  "reason"
+                ],
+                "properties": {
+                  "expectedVersion": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "reason": {
+                    "enum": [
+                      "checked_state",
+                      "accepted_uncertainty",
+                      "no_further_action"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Operación con revisión durable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Operation"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Cursor, límite o filtros inválidos; cursor ligado al alcance actual."
+          },
+          "401": {
+            "description": "Autenticación requerida."
+          },
+          "403": {
+            "description": "Decisión reservada a sesión humana con Origin exacto."
+          },
+          "409": {
+            "description": "Versión o disposición cambió."
+          }
+        }
+      }
+    },
+    "/api/incidents": {
+      "get": {
+        "summary": "Página autorizada de incidents",
+        "description": "Orden estable descendente por inserción. Visibilidad antes de límite; cursor cifrado ligado a ruta, filtros y autoridad, válido 30 minutos. Los cambios nuevos no entran en páginas de una consulta ya iniciada. No se publica un total inventado.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "actor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "resourceId",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "view",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Página y continuación real.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "incidents",
+                    "nextCursor",
+                    "hasMore"
+                  ],
+                  "properties": {
+                    "incidents": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/OperationalIncident"
+                      }
+                    },
+                    "nextCursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "hasMore": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Cursor, límite o filtros inválidos; cursor ligado al alcance actual."
+          },
+          "401": {
+            "description": "Autenticación requerida."
+          },
+          "403": {
+            "description": "Decisión reservada a sesión humana con Origin exacto."
+          }
+        }
+      }
+    },
+    "/api/incidents/current": {
+      "get": {
+        "summary": "Página autorizada de incidents",
+        "description": "Orden estable descendente por inserción. Visibilidad antes de límite; cursor cifrado ligado a ruta, filtros y autoridad, válido 30 minutos. Los cambios nuevos no entran en páginas de una consulta ya iniciada. No se publica un total inventado.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "actor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "resourceId",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "view",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Página y continuación real.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "incidents",
+                    "nextCursor",
+                    "hasMore"
+                  ],
+                  "properties": {
+                    "incidents": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/OperationalIncident"
+                      }
+                    },
+                    "nextCursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "hasMore": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Cursor, límite o filtros inválidos; cursor ligado al alcance actual."
+          },
+          "401": {
+            "description": "Autenticación requerida."
+          },
+          "403": {
+            "description": "Decisión reservada a sesión humana con Origin exacto."
+          }
+        }
+      }
+    },
+    "/api/incidents/history": {
+      "get": {
+        "summary": "Página autorizada de incidents",
+        "description": "Orden estable descendente por inserción. Visibilidad antes de límite; cursor cifrado ligado a ruta, filtros y autoridad, válido 30 minutos. Los cambios nuevos no entran en páginas de una consulta ya iniciada. No se publica un total inventado.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "actor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "resourceId",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "view",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Página y continuación real.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "incidents",
+                    "nextCursor",
+                    "hasMore"
+                  ],
+                  "properties": {
+                    "incidents": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/OperationalIncident"
+                      }
+                    },
+                    "nextCursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "hasMore": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Cursor, límite o filtros inválidos; cursor ligado al alcance actual."
+          },
+          "401": {
+            "description": "Autenticación requerida."
+          },
+          "403": {
+            "description": "Decisión reservada a sesión humana con Origin exacto."
+          }
+        }
+      }
+    },
+    "/api/incidents/{id}/history": {
+      "get": {
+        "summary": "Página autorizada de events",
+        "description": "Orden estable descendente por inserción. Visibilidad antes de límite; cursor cifrado ligado a ruta, filtros y autoridad, válido 30 minutos. Los cambios nuevos no entran en páginas de una consulta ya iniciada. No se publica un total inventado.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "actor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "resourceId",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "view",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Página y continuación real.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "events",
+                    "nextCursor",
+                    "hasMore"
+                  ],
+                  "properties": {
+                    "events": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/OperationalIncident"
+                      }
+                    },
+                    "nextCursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "hasMore": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Cursor, límite o filtros inválidos; cursor ligado al alcance actual."
+          },
+          "401": {
+            "description": "Autenticación requerida."
+          },
+          "403": {
+            "description": "Decisión reservada a sesión humana con Origin exacto."
+          }
+        }
+      }
+    },
+    "/api/incidents/{id}/acknowledgment": {
+      "post": {
+        "summary": "Reconocer el informe sin fabricar recuperación ni cerrar el incidente.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "expectedVersion"
+                ],
+                "properties": {
+                  "expectedVersion": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Incidente con reconocimiento durable."
+          },
+          "400": {
+            "description": "Cursor, límite o filtros inválidos; cursor ligado al alcance actual."
+          },
+          "401": {
+            "description": "Autenticación requerida."
+          },
+          "403": {
+            "description": "Decisión reservada a sesión humana con Origin exacto."
+          },
+          "409": {
+            "description": "El informe cambió."
+          }
+        }
+      }
+    },
+    "/api/attention/summary": {
+      "get": {
+        "summary": "Atención, actividad y cobertura actuales autorizadas, sin consultas de proveedor.",
+        "responses": {
+          "200": {
+            "description": "Resumen actual.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttentionSummary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Cursor, límite o filtros inválidos; cursor ligado al alcance actual."
+          },
+          "401": {
+            "description": "Autenticación requerida."
+          },
+          "403": {
+            "description": "Decisión reservada a sesión humana con Origin exacto."
+          }
+        }
+      }
+    },
+    "/api/resources/{id}/expectation": {
+      "get": {
+        "summary": "Obligación de disponibilidad y última intención de energía; no prueba ejecución histórica.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "expectation e intent, con versiones y contexto causal."
+          },
+          "400": {
+            "description": "Cursor, límite o filtros inválidos; cursor ligado al alcance actual."
+          },
+          "401": {
+            "description": "Autenticación requerida."
+          },
+          "403": {
+            "description": "Decisión reservada a sesión humana con Origin exacto."
+          }
+        }
+      },
+      "put": {
+        "summary": "Cambiar obligación explícita; no envía energía ni altera salud observada.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "expectedVersion",
+                  "mode"
+                ],
+                "properties": {
+                  "expectedVersion": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "mode": {
+                    "enum": [
+                      "observe",
+                      "on-demand",
+                      "always-on"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Expectativa registrada."
+          },
+          "400": {
+            "description": "Cursor, límite o filtros inválidos; cursor ligado al alcance actual."
+          },
+          "401": {
+            "description": "Autenticación requerida."
+          },
+          "403": {
+            "description": "Decisión reservada a sesión humana con Origin exacto."
+          },
+          "409": {
+            "description": "Versión vencida."
+          }
+        }
+      }
+    },
+    "/api/secrets/requests/pending": {
+      "get": {
+        "summary": "Página autorizada de requests",
+        "description": "Orden estable descendente por inserción. Visibilidad antes de límite; cursor cifrado ligado a ruta, filtros y autoridad, válido 30 minutos. Los cambios nuevos no entran en páginas de una consulta ya iniciada. No se publica un total inventado.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "actor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "resourceId",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "view",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Página y continuación real.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "requests",
+                    "nextCursor",
+                    "hasMore"
+                  ],
+                  "properties": {
+                    "requests": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SecretRequest"
+                      }
+                    },
+                    "nextCursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "hasMore": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Cursor, límite o filtros inválidos; cursor ligado al alcance actual."
+          },
+          "401": {
+            "description": "Autenticación requerida."
+          },
+          "403": {
+            "description": "Decisión reservada a sesión humana con Origin exacto."
+          }
+        }
+      }
+    },
+    "/api/secrets/requests/counts": {
+      "get": {
+        "summary": "Conteos actuales de solicitudes; exclusivamente sesión humana.",
+        "responses": {
+          "200": {
+            "description": "counts por estado, sin valores."
+          },
+          "400": {
+            "description": "Cursor, límite o filtros inválidos; cursor ligado al alcance actual."
+          },
+          "401": {
+            "description": "Autenticación requerida."
+          },
+          "403": {
+            "description": "Decisión reservada a sesión humana con Origin exacto."
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,361 @@
+/* Feedback: banners, progreso de órdenes, bandeja, diálogo, esqueletos, estados vacíos. */
+
+.banner {
+  display: flex;
+  gap: var(--space-12);
+  align-items: flex-start;
+  padding: var(--space-14) var(--space-16);
+  box-shadow: var(--elevation-pixel);
+}
+.banner__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+.banner--night {
+  background: var(--color-surface-night);
+  color: var(--color-text-on-night);
+}
+.banner--warn {
+  background: var(--color-state-warn-bg);
+}
+.banner--info {
+  background: var(--color-state-busy-bg);
+}
+.banner--bad {
+  background: var(--color-state-danger-bg);
+  color: var(--color-text-on-danger);
+}
+.banner--ok {
+  background: var(--color-state-ok-bg);
+}
+.banner .glyph {
+  margin-top: 2px;
+}
+
+/* Progreso por etapas (NO es un porcentaje: no existe avance medible). Registrada → En curso → Resultado */
+.stages {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-8);
+}
+.stage-block {
+  display: block;
+  height: 16px;
+  border: var(--border-regular) solid var(--color-brand-night);
+  background: var(--color-surface-paper);
+}
+.stage-block.is-done {
+  background: var(--color-brand-night);
+  transform-origin: left center;
+  animation: stage-fill 320ms steps(4, end) both;
+}
+.stage-block.is-active {
+  background: var(--color-brand-violet);
+  animation: stage-pulse 0.5s step-end infinite;
+}
+.stage-block.is-ok {
+  background: var(--color-brand-mint);
+  transform-origin: left center;
+  animation: stage-fill 320ms steps(4, end) both;
+}
+.stage-block.is-unc {
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-brand-sun) 0 6px,
+    var(--color-brand-night) 6px 12px
+  );
+  background-size: 12px 100%;
+  animation: stage-march 0.6s steps(2, end) infinite;
+}
+.stage-block.is-bad {
+  background: var(--color-state-danger-bg);
+}
+.stage-labels {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-8);
+  margin-top: var(--space-6);
+  font: var(--font-weight-semibold) var(--font-size-small) / 1.1
+    var(--font-family-display);
+}
+
+.order-band {
+  display: block;
+  flex: none;
+  width: 12px;
+  background: var(--color-brand-violet);
+}
+.order-band.is-ok {
+  background: var(--color-brand-mint);
+}
+.order-band.is-bad {
+  background: var(--color-state-danger-bg);
+}
+.order-band.is-unc {
+  background: repeating-linear-gradient(
+    180deg,
+    var(--color-brand-sun) 0 6px,
+    var(--color-brand-night) 6px 12px
+  );
+  background-size: 100% 12px;
+  animation: stage-march-y 0.6s steps(2, end) infinite;
+}
+.order-band.is-active {
+  animation: stage-pulse 0.7s step-end infinite;
+}
+
+/* Bandeja de órdenes sobre la barra inferior (la orden sobrevive a la navegación) */
+.tray {
+  position: fixed;
+  left: var(--space-16);
+  right: var(--space-16);
+  bottom: calc(var(--size-tabbar) + var(--safe-bottom, 0px) + var(--space-18));
+  z-index: 30;
+}
+.tray__button {
+  width: 100%;
+  min-height: 60px;
+  padding: 0 var(--space-14) 0 0;
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-12);
+  text-align: left;
+  border: 0;
+  background: var(--color-surface-paper);
+  color: var(--color-brand-night);
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow:
+    var(--elevation-pixel),
+    var(--elevation-base-key) var(--color-brand-violet);
+  transition: transform var(--motion-duration-press)
+    var(--motion-easing-pixel-press);
+}
+.tray__button:active {
+  transform: translateY(4px);
+  box-shadow: var(--elevation-pixel);
+}
+.tray__text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  padding: var(--space-8) 0;
+}
+.tray__title {
+  font: var(--font-weight-bold) var(--font-size-body) / 1.2
+    var(--font-family-display);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Diálogo de confirmación (alertdialog) */
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: var(--color-surface-scrim);
+}
+.dialog {
+  position: fixed;
+  z-index: 61;
+  left: var(--space-16);
+  right: var(--space-16);
+  bottom: calc(var(--space-28) + var(--safe-bottom, 0px));
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+  padding: var(--space-18) var(--space-16) var(--space-20);
+  background: var(--color-surface-night);
+  color: var(--color-text-on-night);
+  box-shadow: var(--elevation-pixel-cream), var(--elevation-dialog);
+}
+.dialog__eyebrow {
+  font: var(--font-weight-bold) var(--font-size-small) / 1.2
+    var(--font-family-display);
+  color: var(--color-state-danger-on-night);
+}
+.dialog__lines li {
+  display: flex;
+  gap: var(--space-10);
+  font-size: var(--font-size-body);
+  line-height: 1.4;
+}
+.dialog__lines .glyph {
+  color: var(--color-brand-sun);
+  margin-top: 3px;
+}
+
+/* Esqueletos de carga */
+.skeleton {
+  display: block;
+  background: var(--color-brand-sand-line);
+  animation: stage-pulse 1.2s step-end infinite;
+}
+.on-night .skeleton {
+  background: var(--color-brand-dusk);
+}
+
+/* Estado vacío / error con personaje */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-12);
+  padding: var(--space-22) var(--space-16);
+  text-align: center;
+}
+
+.note-text {
+  display: block;
+}
+.note-caret {
+  position: absolute;
+  right: var(--space-12);
+  bottom: var(--space-4);
+  color: var(--color-brand-sun);
+  animation: stage-pulse 0.5s step-end infinite;
+}
+
+/* Barras de presupuesto pixeladas (10 celdas) */
+.budget-bar {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 3px;
+  height: 16px;
+}
+.budget-bar span {
+  background: var(--color-surface-paper);
+  box-shadow: inset 0 0 0 2px var(--color-brand-night);
+}
+.budget-bar span.is-on {
+  background: var(--color-brand-violet);
+}
+.budget-bar span.is-hot {
+  background: var(--color-brand-coral);
+}
+
+/* Destello de partículas al confirmar */
+.burst {
+  position: absolute;
+  left: 50%;
+  top: 48px;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.burst i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 6px;
+  height: 6px;
+  opacity: 0;
+  animation: burst 760ms steps(8, end) forwards;
+}
+.burst i:nth-child(1) {
+  --dx: -64px;
+  --dy: -30px;
+  background: var(--color-brand-sun);
+}
+.burst i:nth-child(2) {
+  --dx: -40px;
+  --dy: -52px;
+  background: var(--color-brand-coral);
+}
+.burst i:nth-child(3) {
+  --dx: -12px;
+  --dy: -60px;
+  background: var(--color-brand-mint);
+}
+.burst i:nth-child(4) {
+  --dx: 18px;
+  --dy: -56px;
+  background: var(--color-brand-sun);
+}
+.burst i:nth-child(5) {
+  --dx: 46px;
+  --dy: -44px;
+  background: var(--color-brand-rose);
+}
+.burst i:nth-child(6) {
+  --dx: 66px;
+  --dy: -22px;
+  background: var(--color-brand-orange);
+}
+.burst i:nth-child(7) {
+  --dx: 58px;
+  --dy: 10px;
+  background: var(--color-brand-mint);
+}
+.burst i:nth-child(8) {
+  --dx: -56px;
+  --dy: 12px;
+  background: var(--color-brand-rose);
+}
+.burst i:nth-child(9) {
+  --dx: -28px;
+  --dy: -34px;
+  background: var(--color-brand-orange);
+}
+.burst i:nth-child(10) {
+  --dx: 30px;
+  --dy: -30px;
+  background: var(--color-brand-coral);
+}
+
+.dialog__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-22);
+  margin-top: var(--space-22);
+}
+.skip-link {
+  position: absolute;
+  left: var(--space-16);
+  top: -80px;
+  z-index: 100;
+  padding: var(--space-12) var(--space-16);
+  background: var(--color-brand-sun);
+  color: var(--color-brand-night);
+  font: var(--font-weight-bold) var(--font-size-body) / 1
+    var(--font-family-display);
+  box-shadow: var(--elevation-pixel);
+}
+.skip-link:focus {
+  top: var(--space-12);
+}
+@media (min-width: 701px) {
+  .dialog__actions {
+    flex-direction: row-reverse;
+  }
+  .dialog__actions > * {
+    flex: 1;
+  }
+}
+
+/* Hojas inferiores en móvil: pegadas al borde, con asa y subida por pasos */
+@media (max-width: 700px) {
+  .dialog {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding-bottom: calc(var(--space-28) + var(--safe-bottom, 0px));
+    animation: sheet-up 240ms steps(6, end);
+  }
+  .dialog::before {
+    content: "";
+    display: block;
+    width: 48px;
+    height: 6px;
+    margin: 0 auto var(--space-14);
+    background: var(--color-brand-violet-soft);
+  }
+}
+@keyframes sheet-up { from { transform: translateY(40px); opacity: 0 } to { transform: none; opacity: 1 } }
+@media (prefers-reduced-motion: reduce) { .dialog { animation: none } }

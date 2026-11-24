@@ -1,0 +1,47 @@
+/* Tú: estado del sistema, dispositivos y avisos, ajustes, contraseña e instalar (v2). Usa también ag-* de area-agents.css. */
+
+/* «Tú» no es pestaña en el móvil y lleva back a Hoy; con barra lateral (≥ 701 px) sobra. */
+@media (min-width: 701px) { .me .v2-head .v2-back { display: none; } }
+.me-tabs { margin-top: 16px; }
+.me-tabs .v2-seg__item { min-height: 44px; padding: 4px 8px; white-space: normal; text-align: center; line-height: 1.15; }
+@media (max-width: 380px) { .me-tabs .v2-seg__item { font-size: 12.5px; padding: 4px 4px; } }
+@media (min-width: 701px) { .me-tabs .v2-seg { max-width: 560px; } }
+
+.me .v2-row__title, .me .v2-row__sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Tabla compacta de fuentes: filas en el móvil, columnas desde 701 px. */
+.me-src { display: grid; grid-template-columns: 8px minmax(0, 1fr) auto; gap: 12px; align-items: center; min-height: 58px; padding: 10px 14px 10px 16px; box-sizing: border-box; }
+.me-src__text { min-width: 0; }
+.me-src__title { display: block; font: 620 15px/1.25 var(--sans); letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.me-src__sub { display: block; margin-top: 2px; font-size: 12.5px; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.me-src__col { display: none; font-size: 13.5px; color: var(--text-2); }
+.me-src__age { text-align: right; white-space: nowrap; }
+.me-src--head { display: none; }
+@media (min-width: 701px) {
+  .me-src { grid-template-columns: 8px minmax(0, 1fr) 110px 64px; }
+  .me-src__col { display: block; }
+  .me-src__every { display: none; }
+  .me-src--head { display: grid; min-height: 0; padding-top: 2px; padding-bottom: 8px; border-bottom: 1px solid var(--border); font: 500 12px var(--sans); color: var(--text-3); }
+  .me-src--head span:last-child { text-align: right; }
+}
+
+.me-tone--ok { color: var(--ok-text); }
+.me-tone--bad { color: var(--bad-text); }
+.me-tone--unc { color: var(--unc-text); }
+.me-tone--stale { color: var(--stale-text); }
+.me-tone--busy { color: var(--busy-text); }
+.me-tone--off, .me-tone--neutral { color: var(--text-3); }
+.me-num { font: 650 17px var(--mono); font-variant-numeric: tabular-nums; color: var(--text-2); }
+.me-value { font-size: 13.5px; color: var(--text-3); white-space: nowrap; }
+
+.me-avatar { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: var(--primary); color: var(--on-primary); font: 650 16px var(--sans); flex-shrink: 0; }
+
+/* Avisos */
+.me-toggle { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; padding: 8px 16px; box-sizing: border-box; font: 500 15px var(--sans); color: var(--text); cursor: pointer; }
+.me-toggle:has(input:focus-visible) { outline: 2px solid var(--text); outline-offset: -2px; }
+.me-push-actions { display: grid; gap: 10px; }
+
+/* Instalar */
+.me-step { display: flex; align-items: center; gap: 14px; min-height: 58px; padding: 10px 16px; font-size: 15px; line-height: 1.35; }
+.me-step__n { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--sunken); font: 650 14px var(--sans); color: var(--text); flex-shrink: 0; }
+#me-push .v2-row__sub { white-space: normal; }

@@ -1,0 +1,27 @@
+Use case: ui-mockup. ONE radically new art-directed mobile app home screen for Infra Control. Portrait 1024x1536, flat edge-to-edge UI, no device frame. A real personal infrastructure remote controller, Spanish. Client explicitly rejected the previous crow mascot and asked to CHANGE VISION. Do NOT carry over the bird, pixel art, any mascot, robot, animal, cartoon, giant newspaper headline, cream paper sheet, orange rail, numbered editorial sections or decorative computer renders. Do not imitate common AI dashboards.
+
+NEW DIRECTION: MINERAL / CIRCUIT. Contemporary industrial design, quietly original, like a well engineered handheld instrument translated to software. Sharp modern humanist typography (normal sans serif, not monospace everywhere); polished grid, deliberate controlled spacing, some generous open space, asymmetrical information hierarchy but mechanically aligned actions. Palette: cool mineral #E6E9E6 overall background, white #FAFBF8 surfaces, deep graphite #202824 type, pale acid-chartreuse #D9F375 signature accent. Accent looks like a fluorescent physical tab, not neon light. Exactly one dark graphite region as the hero PC control surface. No gradients, NO glossy 3D, NO shadows, NO grain, NO glass, NO landscapes, NO decorative illustrations. Corners 12px on the PC instrument enclosure, 6px on small buttons; mostly ruled rows elsewhere. Thin line icons of consistent stroke. Strong tactile controls achieved by geometry, contrast and spacing, not material rendering. Clean distinctive high-end software with the restraint of a physical industrial instrument.
+
+Information architecture with clear useful density; everything fits in one screen. Text readable at 390 CSS px. Maximum heading about 30 CSS px, no oversized banner.
+TOP 0-160px at image scale:
+small three parallel vertical bar brand mark, 'infra / control' on two tiny aligned lines at upper left. 'DEMO' tiny outlined badge and a circle outline settings gear upper right.
+Below regular title 'Mi espacio' left in confident 60px humanist type, and small muted 'Admin' right. No slogan, no greeting, no big date.
+STATUS 160-240px:
+A single flat pale chartreuse full-width slim strip with dark dot and text 'Sin alertas' left, compact freshness 'Lectura hace 12 s' right. No enormous numbers or fabricated metrics.
+
+PRIMARY INSTRUMENT 270-820px:
+Wide charcoal PC enclosure with very subtle 12px corners and meticulous inside spacing. Small heading 'CASA' top left and tiny status circle with 'En línea' top right. Bold 'PC de casa' around 56px and below 'Último aviso hace 12 s' in lighter gray, fully legible. Right of title a small thin monitor glyph, NOT illustration. Central inset band in a slightly lighter solid graphite shade: left small 'Sistema actual' above clearly readable 'CachyOS'; at right a 44 CSS px-equivalent bordered 'Cambiar' button with two switching arrows. This button opens system selector, NOT an external link, no fake Windows toggle.
+Below that, a full-width calm high-contrast pale chartreuse control, height ~58 CSS px at screen scale: left power outline symbol, main label 'Apagar PC', small chevron far right. It represents entering the confirmation flow, not a power switch or executed action; add tiny 'Requiere confirmación' below the button inside dark area. No red alarm styling in normal healthy state.
+ATTACHED to bottom of the dark PC enclosure, a white horizontal hardware dependency band with a thin border: small router line glyph, bold 'FiberHome', subtitle 'Reportando · hace 25 s', compact 'Leer' outlined control right. Below small dark-gray 'No confirma acceso a Internet'. The entire PC+router is a single crafted component; no detached tall router card.
+
+SECONDARY 850-1170px:
+Section caption 'ORQUESTADOR', small right 'Ver detalle →'.
+Hermes in a wide white flat region with thin bottom rule. Use an abstract utilitarian icon of three horizontal short bars only, NOT a face or logo or mascot. 'Hermes' bold left, 'EC2 encendida' with a dark olive dot and supporting 'Observado hace 40 s'. At right show two precisely aligned equal compact controls stacked: 'Consultar' and 'Energía'. No illustration. Crisp negative space.
+Section label 'OTROS EQUIPOS'.
+MacBook and Nube in TWO full-width plain list rows directly on mineral background, separated by hairlines. Laptop icon + 'MacBook', right-aligned status 'Sin agente' and chevron. Cloud icon + 'Nube', right-aligned 'Ver equipos' and chevron. Realistically readable dark text.
+
+BOTTOM:
+Quiet breathing space above bottom navigation; no filler footer motto.
+Bottom navigation integrated with full-width WHITE surface and thin border, four equal icons with text beneath: Inicio / Equipos / Actividad / Costes. Inicio has a precise small chartreuse rectangular backing around ICON ONLY, text dark, other items dark muted. Bottom safe area clear and generous.
+
+Composition must feel like an original thoughtful PRODUCT rather than a presentation slide or stylized art poster. The PC module has highest visual priority, not the header. Restrict lime to status strip, one main action and selected nav icon. Powerful proportion and usable controls create the personality. No mascots anywhere. All Spanish labels accurately typeset. Deliver one complete professional high-fidelity UI screen.

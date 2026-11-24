@@ -1,0 +1,100 @@
+extensions:
+  file_storage:
+    directory: /var/lib/otelcol/storage
+    create_directory: true
+
+receivers:
+  host_metrics/fast:
+    collection_interval: 30s
+    root_path: /hostfs
+    scrapers:
+      cpu:
+        metrics:
+          system.cpu.utilization:
+            enabled: true
+      memory:
+        metrics:
+          system.memory.utilization:
+            enabled: true
+          system.memory.usage:
+            enabled: true
+          system.memory.limit:
+            enabled: true
+      network:
+        metrics:
+          system.network.io:
+            enabled: true
+          system.network.connections:
+            enabled: false
+          system.network.dropped:
+            enabled: false
+          system.network.errors:
+            enabled: false
+          system.network.packets:
+            enabled: false
+
+  host_metrics/filesystem:
+    collection_interval: 60s
+    root_path: /hostfs
+    scrapers:
+      filesystem:
+        metrics:
+          system.filesystem.utilization:
+            enabled: true
+          system.filesystem.inodes.usage:
+            enabled: false
+          system.filesystem.usage:
+            enabled: false
+        exclude_mount_points:
+          match_type: regexp
+          mount_points:
+            - /dev/.*
+            - /proc/.*
+            - /sys/.*
+            - /run/.*
+            - /var/lib/docker/.*
+            - /var/lib/containerd/.*
+
+processors:
+  memory_limiter:
+    check_interval: 5s
+    limit_mib: 128
+  resource/identity:
+    attributes:
+      - key: host.id
+        value: ${env:INFRA_CONTROL_HOST_ID}
+        action: upsert
+  batch:
+    timeout: 5s
+    send_batch_size: 512
+
+exporters:
+  otlp_http:
+    metrics_endpoint: ${env:INFRA_CONTROL_OTLP_URL}
+    encoding: json
+    compression: gzip
+    headers:
+      Authorization: Bearer ${env:INFRA_CONTROL_OTLP_TOKEN}
+    timeout: 10s
+    retry_on_failure:
+      enabled: true
+      initial_interval: 5s
+      max_interval: 30s
+      max_elapsed_time: 0s
+    sending_queue:
+      enabled: true
+      storage: file_storage
+      queue_size: 10
+      num_consumers: 1
+
+service:
+  extensions: [file_storage]
+  pipelines:
+    metrics/fast:
+      receivers: [host_metrics/fast]
+      processors: [memory_limiter, resource/identity, batch]
+      exporters: [otlp_http]
+    metrics/filesystem:
+      receivers: [host_metrics/filesystem]
+      processors: [memory_limiter, resource/identity, batch]
+      exporters: [otlp_http]

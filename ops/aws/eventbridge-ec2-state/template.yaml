@@ -1,0 +1,116 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >-
+  Send EC2 state-change events to Infra Control through an authenticated EventBridge API destination.
+  Deploy once per connected AWS account and enabled region.
+
+Parameters:
+  PanelEventsEndpoint:
+    Type: String
+    AllowedPattern: '^https://[^ ]+/api/aws/events$'
+    Description: Public HTTPS URL ending in /api/aws/events.
+  EventTokenSecretArn:
+    Type: String
+    AllowedPattern: '^arn:[^:]+:secretsmanager:[^:]+:\d{12}:secret:.+'
+    Description: Secrets Manager JSON secret containing the per-account token under key "token".
+  InvocationRateLimitPerSecond:
+    Type: Number
+    Default: 10
+    MinValue: 1
+    MaxValue: 300
+    Description: Maximum EventBridge delivery rate to the panel.
+
+Resources:
+  DeliveryDlq:
+    Type: AWS::SQS::Queue
+    Properties:
+      MessageRetentionPeriod: 1209600
+      SqsManagedSseEnabled: true
+
+  EventConnection:
+    Type: AWS::Events::Connection
+    Properties:
+      Name: infra-control-ec2-events
+      Description: Per-account token for Infra Control state-change ingestion.
+      AuthorizationType: API_KEY
+      AuthParameters:
+        ApiKeyAuthParameters:
+          ApiKeyName: x-infra-control-token
+          ApiKeyValue: !Sub '{{resolve:secretsmanager:${EventTokenSecretArn}:SecretString:token}}'
+
+  EventApiDestination:
+    Type: AWS::Events::ApiDestination
+    Properties:
+      Name: infra-control-ec2-state
+      Description: EC2 lifecycle events to the private Infra Control inbox.
+      ConnectionArn: !GetAtt EventConnection.Arn
+      InvocationEndpoint: !Ref PanelEventsEndpoint
+      HttpMethod: POST
+      InvocationRateLimitPerSecond: !Ref InvocationRateLimitPerSecond
+
+  InvokeApiDestinationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: InvokeInfraControlEc2Destination
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: events:InvokeApiDestination
+                Resource: !GetAtt EventApiDestination.Arn
+
+  Ec2StateRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: infra-control-ec2-state-change
+      Description: Deliver EC2 state changes to Infra Control.
+      State: ENABLED
+      EventPattern:
+        source:
+          - aws.ec2
+        detail-type:
+          - EC2 Instance State-change Notification
+      Targets:
+        - Id: InfraControlApiDestination
+          Arn: !GetAtt EventApiDestination.Arn
+          RoleArn: !GetAtt InvokeApiDestinationRole.Arn
+          DeadLetterConfig:
+            Arn: !GetAtt DeliveryDlq.Arn
+          RetryPolicy:
+            MaximumEventAgeInSeconds: 86400
+            MaximumRetryAttempts: 185
+
+  DeliveryDlqPolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues:
+        - !Ref DeliveryDlq
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowEventBridgeTargetDelivery
+            Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action: sqs:SendMessage
+            Resource: !GetAtt DeliveryDlq.Arn
+            Condition:
+              ArnEquals:
+                aws:SourceArn: !GetAtt Ec2StateRule.Arn
+
+Outputs:
+  EventRuleArn:
+    Value: !GetAtt Ec2StateRule.Arn
+  ApiDestinationArn:
+    Value: !GetAtt EventApiDestination.Arn
+  DeadLetterQueueUrl:
+    Value: !Ref DeliveryDlq
+  DeadLetterQueueArn:
+    Value: !GetAtt DeliveryDlq.Arn

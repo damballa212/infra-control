@@ -1,0 +1,24 @@
+# Una sola tanda mensual y agrupada por ecosistema, para no inundar de PR.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule: { interval: monthly }
+    open-pull-requests-limit: 3
+    groups: { npm-raiz: { patterns: ['*'] } }
+  - package-ecosystem: npm
+    directory: /design/handoff
+    schedule: { interval: monthly }
+    open-pull-requests-limit: 3
+    groups: { npm-ui: { patterns: ['*'] } }
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: monthly }
+    groups: { actions: { patterns: ['*'] } }
+  - package-ecosystem: docker
+    directory: /
+    schedule: { interval: monthly }
+    groups: { docker: { patterns: ['*'] } }
+    # El runtime es Node 24 (AGENTS.md); los saltos de versión mayor se deciden a mano.
+    ignore:
+      - { dependency-name: node, update-types: ['version-update:semver-major'] }

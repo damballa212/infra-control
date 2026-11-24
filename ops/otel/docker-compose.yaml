@@ -1,0 +1,25 @@
+services:
+  host-metrics:
+    image: otel/opentelemetry-collector-contrib:0.163.2
+    command: ["--config=/etc/otelcol-contrib/collector.yaml"]
+    env_file: [.env]
+    network_mode: host
+    user: "0:0"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: /
+        target: /hostfs
+        read_only: true
+        bind:
+          propagation: rslave
+      - ./collector.yaml:/etc/otelcol-contrib/collector.yaml:ro
+      - collector-state:/var/lib/otelcol/storage
+    tmpfs:
+      - /tmp
+
+volumes:
+  collector-state:

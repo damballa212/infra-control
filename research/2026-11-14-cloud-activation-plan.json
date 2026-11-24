@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Production monitoring activation plan; not proof of deployment or continuous provider coverage",
+  "awsConnection": {
+    "name": "shop-dev",
+    "displayName": "shop · Producción",
+    "accountId": "100000000001",
+    "roleArn": "arn:aws:iam::100000000001:role/infra-control-production-monitor",
+    "sourceAccount": "prod",
+    "enabled": true,
+    "instances": []
+  },
+  "suspend": { "name": "lab", "accountId": "100000000003", "enabled": false, "disabledReason": "account_suspended", "provenance": "Admin confirmed temporary suspension; preserve history" },
+  "services": [
+    {
+      "key": "prod-cms-production", "name": "CMS · a small business",
+      "projectKey": "prod-cms", "projectName": "shop · CMS", "environment": "production", "criticality": "critical",
+      "relations": [{ "resourceId": "aws:100000000001:us-east-1:i-0b4413f90cc7e0831", "relationType": "hosted_on", "evidence": "operator_confirmed" }]
+    },
+    {
+      "key": "shop-atencion-production", "name": "Atención AI · a small business",
+      "projectKey": "shop-atencion-ai", "projectName": "shop · Atención AI", "environment": "production", "criticality": "critical",
+      "relations": [{ "resourceId": "aws:100000000001:us-east-1:i-0d72dff3f7a35d4d7", "relationType": "hosted_on", "evidence": "operator_confirmed" }]
+    },
+    {
+      "key": "shop-rendicion-production", "name": "Rendición · branch",
+      "projectKey": "shop-rendicion-branch", "projectName": "shop · Rendición branch", "environment": "production", "criticality": "critical",
+      "relations": [{ "resourceId": "aws:100000000001:us-east-1:i-07ef7c6aa0c5e6038", "relationType": "hosted_on", "evidence": "operator_confirmed" }]
+    }
+  ],
+  "serviceProbes": [
+    { "resourceId": "aws:100000000001:us-east-1:i-0b4413f90cc7e0831", "url": "https://52.44.143.27.example.com/health", "expectedStatusCodes": [200], "intervalSeconds": 60, "timeoutMs": 3000 },
+    { "resourceId": "aws:100000000001:us-east-1:i-0d72dff3f7a35d4d7", "url": "https://support-shop.184.198.51.184.example.com/health", "expectedStatusCodes": [200], "intervalSeconds": 60, "timeoutMs": 3000 },
+    { "resourceId": "aws:100000000001:us-east-1:i-07ef7c6aa0c5e6038", "url": "https://erp-shop.184.198.61.208.example.com/login", "expectedStatusCodes": [200], "intervalSeconds": 60, "timeoutMs": 3000 }
+  ],
+  "alwaysOn": [
+    "aws:100000000001:us-east-1:i-0b4413f90cc7e0831",
+    "aws:100000000001:us-east-1:i-0d72dff3f7a35d4d7",
+    "aws:100000000001:us-east-1:i-07ef7c6aa0c5e6038"
+  ],
+  "limits": [
+    "Importing this connection grants monitoring, not permission to stop production. No new power allowlist entries.",
+    "Two stopped furniture-account instances remain separate from the three production hosts; do not start them or attach volumes.",
+    "HTTP 200 probes validate those specific public endpoints, not financial transactions, WhatsApp sessions or end-to-end workflows.",
+    "Rendición has no public /health or /version route in the current release; use its actual /login endpoint without following redirects.",
+    "Native metrics for hosts, continuous Azure identity and agents region-directory permission remain separately tracked."
+  ]
+}

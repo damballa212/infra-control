@@ -1,0 +1,301 @@
+/* Base: tema (claro/oscuro según el sistema), reset, tipografía y utilidades.
+   Todo valor visual sale de tokens/tokens.css. Los componentes usan solo las variables semánticas de :root. */
+:root {
+  color-scheme: light dark;
+  --bg: var(--color-light-bg);
+  --surface: var(--color-light-surface);
+  --sunken: var(--color-light-sunken);
+  --border: var(--color-light-border);
+  --divider: var(--color-light-divider);
+  --text: var(--color-light-text);
+  --text-2: var(--color-light-text2);
+  --text-3: var(--color-light-text3);
+  --text-4: var(--color-light-text4);
+  --primary: var(--color-light-primary);
+  --on-primary: var(--color-light-on-primary);
+  --ok: var(--color-light-ok);
+  --ok-text: var(--color-light-ok-text);
+  --ok-bg: var(--color-light-ok-bg);
+  --bad: var(--color-light-bad);
+  --bad-text: var(--color-light-bad-text);
+  --bad-bg: var(--color-light-bad-bg);
+  --unc: var(--color-light-unc);
+  --unc-text: var(--color-light-unc-text);
+  --unc-bg: var(--color-light-unc-bg);
+  --stale: var(--color-light-stale);
+  --stale-text: var(--color-light-stale-text);
+  --stale-bg: var(--color-light-stale-bg);
+  --busy: var(--color-light-busy);
+  --busy-text: var(--color-light-busy-text);
+  --busy-bg: var(--color-light-busy-bg);
+  --off: var(--color-light-off);
+  --key: var(--color-light-key);
+  --key-bg: var(--color-light-key-bg);
+  --key-border: var(--color-light-key-border);
+  --scrim: var(--color-light-scrim);
+  --bar: var(--color-light-bar);
+  --accent: var(--color-brand-accent);
+  --accent-pressed: var(--color-brand-accent-pressed);
+  --on-accent: var(--color-brand-on-accent);
+  --hairline: var(--color-brand-hairline);
+  --sans: var(--font-family-sans);
+  --mono: var(--font-family-mono);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: var(--color-dark-bg);
+    --surface: var(--color-dark-surface);
+    --sunken: var(--color-dark-sunken);
+    --border: var(--color-dark-border);
+    --divider: var(--color-dark-divider);
+    --text: var(--color-dark-text);
+    --text-2: var(--color-dark-text2);
+    --text-3: var(--color-dark-text3);
+    --text-4: var(--color-dark-text4);
+    --primary: var(--color-dark-primary);
+    --on-primary: var(--color-dark-on-primary);
+    --ok: var(--color-dark-ok);
+    --ok-text: var(--color-dark-ok-text);
+    --ok-bg: var(--color-dark-ok-bg);
+    --bad: var(--color-dark-bad);
+    --bad-text: var(--color-dark-bad-text);
+    --bad-bg: var(--color-dark-bad-bg);
+    --unc: var(--color-dark-unc);
+    --unc-text: var(--color-dark-unc-text);
+    --unc-bg: var(--color-dark-unc-bg);
+    --stale: var(--color-dark-stale);
+    --stale-text: var(--color-dark-stale-text);
+    --stale-bg: var(--color-dark-stale-bg);
+    --busy: var(--color-dark-busy);
+    --busy-text: var(--color-dark-busy-text);
+    --busy-bg: var(--color-dark-busy-bg);
+    --off: var(--color-dark-off);
+    --key: var(--color-dark-key);
+    --key-bg: var(--color-dark-key-bg);
+    --key-border: var(--color-dark-key-border);
+    --scrim: var(--color-dark-scrim);
+    --bar: var(--color-dark-bar);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  background: var(--bg);
+  overscroll-behavior-y: none;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  /* Los diálogos se montan en body, fuera de .app: heredan aquí la fuente y el color. */
+  color: var(--text);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+button {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+a {
+  color: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+dl,
+dd,
+ul,
+ol,
+p,
+h1,
+h2,
+h3,
+h4,
+figure {
+  margin: 0;
+  padding: 0;
+}
+ul,
+ol {
+  list-style: none;
+}
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.app {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: var(--font-size-body);
+  line-height: var(--font-line-height-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ---------- Tipografía ---------- */
+.t-display,
+.t-h1 {
+  font-size: var(--font-size-display);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--font-line-height-tight);
+  letter-spacing: -0.03em;
+}
+.t-title,
+.t-h2 {
+  font-size: var(--font-size-title);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--font-line-height-tight);
+  letter-spacing: -0.025em;
+}
+.t-heading,
+.t-h3 {
+  font-size: var(--font-size-heading);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+.t-body {
+  font-size: var(--font-size-body);
+}
+.t-small {
+  font-size: var(--font-size-small);
+  color: var(--text-2);
+}
+.t-caption {
+  font-size: var(--font-size-caption);
+  color: var(--text-3);
+}
+.t-label {
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-2);
+}
+.t-strong {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text);
+}
+.t-mono,
+.mono {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+.t-age {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--font-size-caption);
+  color: var(--text-3);
+  white-space: nowrap;
+}
+.t-wrap {
+  overflow-wrap: anywhere;
+}
+.t-ok {
+  color: var(--ok-text);
+}
+.t-bad {
+  color: var(--bad-text);
+}
+.t-unc {
+  color: var(--unc-text);
+}
+.t-stale {
+  color: var(--stale-text);
+}
+.t-key {
+  color: var(--key);
+}
+.t-muted {
+  color: var(--text-3);
+}
+
+/* ---------- Utilidades ---------- */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+.stack {
+  display: flex;
+  flex-direction: column;
+}
+.row-flex {
+  display: flex;
+  align-items: center;
+}
+.wrap {
+  flex-wrap: wrap;
+}
+.grow {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.gap-8 {
+  gap: 8px;
+}
+.gap-10 {
+  gap: 10px;
+}
+.gap-12 {
+  gap: 12px;
+}
+.gap-14 {
+  gap: 14px;
+}
+.gap-22 {
+  gap: 20px;
+}
+.gap-26 {
+  gap: 24px;
+}
+.mt-8 {
+  margin-top: 8px;
+}
+.mt-10 {
+  margin-top: 10px;
+}
+.mt-12 {
+  margin-top: 12px;
+}
+.mt-14 {
+  margin-top: 14px;
+}
+.mt-18 {
+  margin-top: 16px;
+}
+.mt-22 {
+  margin-top: 20px;
+}
+
+/* ---------- Sensación nativa en la PWA ----------
+   Mantener pulsado un enlace o botón no abre el menú «abrir en otra ventana» ni selecciona texto de la interfaz.
+   El contenido (valores, IDs, campos) sigue siendo seleccionable. */
+html { -webkit-tap-highlight-color: transparent; }
+a, button, [role="button"], .nav, .nav * { -webkit-touch-callout: none; }
+.nav, .nav *, button, .btn, .seg-item, .filter-chip, [role="tab"], [role="button"] { -webkit-user-select: none; user-select: none; }
+@media (display-mode: standalone) {
+  body { -webkit-user-select: none; user-select: none; }
+  input, textarea, select, [contenteditable="true"], .selectable, .kv__v, code, pre { -webkit-user-select: text; user-select: text; }
+  a img, a svg { -webkit-user-drag: none; }
+}

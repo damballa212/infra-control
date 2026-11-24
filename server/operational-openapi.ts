@@ -1,0 +1,38 @@
+const ref=(name:string)=>({$ref:`#/components/schemas/${name}`});
+const pageProperties={nextCursor:{type:['string','null']},hasMore:{type:'boolean'}};
+const string={type:'string'},nullableString={type:['string','null']};
+const responses={ '400':{description:'Cursor, límite o filtros inválidos; cursor ligado al alcance actual.'},'401':{description:'Autenticación requerida.'},'403':{description:'Decisión reservada a sesión humana con Origin exacto.'}};
+export function paginatedGet(field:string,item:string){
+  const schema={type:'object',required:[field,'nextCursor','hasMore'],properties:{[field]:{type:'array',items:ref(item)},...pageProperties}};
+  return {
+    summary:`Página autorizada de ${field}`,
+    description:'Orden estable descendente por inserción. Visibilidad antes de límite; cursor cifrado ligado a ruta, filtros y autoridad, válido 30 minutos. Los cambios nuevos no entran en páginas de una consulta ya iniciada. No se publica un total inventado.',
+    parameters:[{in:'query',name:'limit',schema:{type:'integer',minimum:1,maximum:100,default:25}},...['cursor','q','actor','state','type','resourceId','view'].map(name=>({in:'query',name,schema:{type:'string'}}))],
+    responses:{...responses,'200':{description:'Página y continuación real.',content:{'application/json':{schema}}}}
+  };
+}
+export const operationalSchemas={
+  OperationReview:{type:'object',required:['disposition','version','canonicalResourceId','updatedAt','reason','evidence'],properties:{disposition:{enum:['pending','reviewed','superseded']},version:{type:'integer',minimum:1},canonicalResourceId:string,updatedAt:string,reason:string,supersededByOperationId:string,reviewedBy:string,reviewedAt:string,evidence:{type:'object',properties:{kind:{enum:['execution_result','later_confirmed_power','human_review']},operationId:string,action:string,confirmedAt:string}}}},
+  Operation:{type:'object',required:['id','resourceId','resourceName','action','actor','state','message','createdAt','updatedAt'],properties:{id:string,resourceId:string,resourceName:string,action:{enum:['start','stop','refresh','boot-windows','boot-cachyos']},actor:string,state:{enum:['accepted','running','succeeded','failed','uncertain']},message:string,createdAt:string,updatedAt:string,review:ref('OperationReview')}},
+  IncidentSourceContext:{type:'object',required:['eventIds'],description:'Procedencia retenida del incidente; no concede permisos. No inferir identidad a partir de etiquetas.',properties:{eventIds:{type:'array',minItems:1,maxItems:2,uniqueItems:true,items:{type:'integer',minimum:1}},resourceId:string,catalogId:string,scopeKey:string,conflict:{const:true}}},
+  OperationalIncident:{type:'object',required:['id','key','component','resourceId','canonicalResourceId','kind','source','status','actionable','openedAt','updatedAt','version','evidence'],properties:{id:string,key:string,component:string,resourceId:nullableString,canonicalResourceId:nullableString,connectionId:string,scopeKey:string,accountId:string,account:string,budgetName:string,sourceContext:ref('IncidentSourceContext'),category:string,kind:{enum:['application','observability','availability','coverage','budget','change']},source:string,status:{enum:['open','unknown','resolved','information']},actionable:{type:'boolean'},openedAt:string,updatedAt:string,resolvedAt:string,openingEventId:{type:['integer','null']},lastEventId:{type:['integer','null']},recoveryEventId:{type:'integer'},version:{type:'integer'},evidence:{type:'object',properties:{reasonCode:string,observedAt:nullableString,from:string,to:string}},acknowledgement:{type:'object',properties:{by:string,at:string,reportVersion:{type:'integer'}}}}},
+  SecretRequest:{type:'object',description:'Metadatos públicos de solicitud; nunca valores ni item_ref.',properties:Object.fromEntries(['id','agent','machine','name','project','reason','state','createdAt','expiresAt'].map(key=>[key,string]))},
+  SecretGrant:{type:'object',description:'Permiso sin referencia privada de bóveda.',properties:Object.fromEntries(['id','agent','machine','project','name','scope','createdAt'].map(key=>[key,string]))},
+  SecretAuditEvent:{type:'object',properties:{id:{type:'integer'},at:string,requestId:nullableString,event:string,actor:string}},
+  AttentionSummary:{type:'object',description:'Conteos autorizados de todo el trabajo actual; attentionGroups agrupa revisiones e incidentes por identidad física o scope. ACK no significa recuperación.',properties:{fetchedAt:string,counts:{type:'object',properties:Object.fromEntries(['attentionGroups','active','pendingReviews','openIncidents','unknownIncidents','coverageProblems'].map(key=>[key,{type:'integer',minimum:0}]))},coverage:{type:'object'},pendingApprovals:{type:'integer',minimum:0}}}
+};
+const ownerBody=(properties:Record<string,unknown>)=>({required:true,content:{'application/json':{schema:{type:'object',additionalProperties:false,required:Object.keys(properties),properties}}}});
+export const operationalPaths={
+  '/api/operations/active':{get:paginatedGet('operations','Operation')},
+  '/api/operations/review':{get:paginatedGet('operations','Operation')},
+  '/api/operations/{id}/review':{post:{summary:'Marcar revisada una ejecución incierta o fallida; nunca modifica su resultado.',parameters:[{in:'path',name:'id',required:true,schema:string}],requestBody:ownerBody({expectedVersion:{type:'integer',minimum:1},reason:{enum:['checked_state','accepted_uncertainty','no_further_action']}}),responses:{...responses,'200':{description:'Operación con revisión durable.',content:{'application/json':{schema:ref('Operation')}}},'409':{description:'Versión o disposición cambió.'}}}},
+  '/api/incidents':{get:paginatedGet('incidents','OperationalIncident')},
+  '/api/incidents/current':{get:paginatedGet('incidents','OperationalIncident')},
+  '/api/incidents/history':{get:paginatedGet('incidents','OperationalIncident')},
+  '/api/incidents/{id}/history':{get:{...paginatedGet('events','OperationalIncident'),parameters:[{in:'path',name:'id',required:true,schema:string},...paginatedGet('events','OperationalIncident').parameters]}},
+  '/api/incidents/{id}/acknowledgment':{post:{summary:'Reconocer el informe sin fabricar recuperación ni cerrar el incidente.',parameters:[{in:'path',name:'id',required:true,schema:string}],requestBody:ownerBody({expectedVersion:{type:'integer',minimum:1}}),responses:{...responses,'200':{description:'Incidente con reconocimiento durable.'},'409':{description:'El informe cambió.'}}}},
+  '/api/attention/summary':{get:{summary:'Atención, actividad y cobertura actuales autorizadas, sin consultas de proveedor.',responses:{...responses,'200':{description:'Resumen actual.',content:{'application/json':{schema:ref('AttentionSummary')}}}}}},
+  '/api/resources/{id}/expectation':{get:{summary:'Obligación de disponibilidad y última intención de energía; no prueba ejecución histórica.',parameters:[{in:'path',name:'id',required:true,schema:string}],responses:{...responses,'200':{description:'expectation e intent, con versiones y contexto causal.'}}},put:{summary:'Cambiar obligación explícita; no envía energía ni altera salud observada.',parameters:[{in:'path',name:'id',required:true,schema:string}],requestBody:ownerBody({expectedVersion:{type:'integer',minimum:0},mode:{enum:['observe','on-demand','always-on']}}),responses:{...responses,'200':{description:'Expectativa registrada.'},'409':{description:'Versión vencida.'}}}},
+  '/api/secrets/requests/pending':{get:paginatedGet('requests','SecretRequest')},
+  '/api/secrets/requests/counts':{get:{summary:'Conteos actuales de solicitudes; exclusivamente sesión humana.',responses:{...responses,'200':{description:'counts por estado, sin valores.'}}}}
+};

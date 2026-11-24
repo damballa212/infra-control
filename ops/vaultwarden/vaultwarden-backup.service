@@ -1,0 +1,10 @@
+[Unit]
+Description=Backup cifrado de Vaultwarden
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+EnvironmentFile=/opt/vaultwarden/backup.env
+ExecStart=/opt/vaultwarden/backup.sh
+Nice=10

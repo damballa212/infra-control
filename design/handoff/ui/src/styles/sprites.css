@@ -1,0 +1,679 @@
+/* Animaciones de sprites. Cada una responde a un ESTADO REAL (nunca simulan actividad del proveedor).
+   Todo se pausa con Page Visibility (.app--paused) y se anula con prefers-reduced-motion (motion.css). */
+.sprite {
+  display: block;
+  overflow: visible;
+}
+
+/* ---------- Hermes ---------- */
+.h-f,
+.h-q,
+.h-wing-folded {
+  display: none;
+}
+.mood-awake .h-eyes-open,
+.mood-awake .h-eyes-blink,
+.mood-busy .h-eyes-open,
+.mood-busy .h-eyes-flare,
+.mood-asleep .h-eyes-shut,
+.mood-unsure .h-eyes-unsure,
+.mood-calm .h-eyes-open,
+.is-happy .h-eyes-flare {
+  display: inline;
+}
+.h-eyes-blink {
+  opacity: 0;
+}
+.mood-awake .h-blink-open {
+  animation: h-blink-open 4.2s step-end infinite;
+}
+.mood-awake .h-eyes-blink {
+  animation: h-blink-close 4.2s step-end infinite;
+}
+.mood-busy .h-blink-open {
+  animation: h-look 1.6s step-end infinite;
+}
+
+/* Alas: tres poses en bucle; dormido las pliega. */
+.h-wing-up,
+.h-wing-down {
+  opacity: 0;
+}
+.mood-awake .h-wing-up,
+.mood-busy .h-wing-up {
+  animation: h-wing-up 0.6s step-end infinite;
+}
+.mood-awake .h-wing-mid,
+.mood-busy .h-wing-mid {
+  animation: h-wing-mid 0.6s step-end infinite;
+}
+.mood-awake .h-wing-down,
+.mood-busy .h-wing-down {
+  animation: h-wing-down 0.6s step-end infinite;
+}
+.mood-busy .h-wing-up,
+.mood-busy .h-wing-mid,
+.mood-busy .h-wing-down {
+  animation-duration: 0.3s;
+}
+.mood-asleep .h-wing-mid {
+  display: none;
+}
+.mood-asleep .h-wing-folded {
+  display: inline;
+}
+
+/* Cuerpo y sombra en el suelo: la sombra se encoge cuando Hermes sube. */
+.mood-awake .h-bob {
+  animation: h-bob 2.4s ease-in-out infinite;
+}
+.mood-busy .h-bob {
+  animation: h-bob 0.9s ease-in-out infinite;
+}
+.mood-asleep .h-bob {
+  animation: h-breathe 4s ease-in-out infinite;
+}
+.mood-unsure .h-bob {
+  animation: h-wobble 2.2s step-end infinite;
+}
+.h-shadow {
+  opacity: 0.28;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.mood-awake .h-shadow {
+  animation: h-shadow 2.4s ease-in-out infinite;
+}
+.mood-busy .h-shadow {
+  animation: h-shadow 0.9s ease-in-out infinite;
+}
+.is-happy .h-jump {
+  animation: h-jump 0.5s cubic-bezier(0.3, 0, 0.4, 1) 3;
+}
+.is-happy .h-shadow {
+  animation: h-shadow-jump 0.5s cubic-bezier(0.3, 0, 0.4, 1) 3;
+}
+.is-happy .h-eyes-flare {
+  animation: h-fade-out 1.5s step-end forwards;
+}
+.is-happy .h-blink-open {
+  animation: h-fade-in 1.5s step-end forwards;
+}
+
+/* Gema de la frente: ritmo según el estado. */
+.h-led {
+  fill: var(--color-brand-mint);
+}
+.mood-awake .h-led,
+.mood-calm .h-led {
+  animation: h-led 3s step-end infinite;
+}
+.mood-busy .h-led {
+  animation: h-led 0.5s step-end infinite;
+}
+.mood-asleep .h-led {
+  fill: var(--color-brand-violet);
+}
+.mood-unsure .h-led {
+  fill: var(--color-brand-orange);
+  animation: h-led 1.2s step-end infinite;
+}
+
+/* Al trabajar los ojos destellan a ritmo; ondas a los lados de la cresta. */
+.h-arc,
+.h-spark,
+.h-z {
+  opacity: 0;
+}
+.mood-busy .h-eyes-flare {
+  animation: h-flare 0.8s step-end infinite;
+}
+.mood-busy .h-arc {
+  animation: h-arc 0.9s step-end infinite;
+}
+.mood-busy .h-arc.a2 {
+  animation-delay: -0.45s;
+}
+.is-happy .h-spark {
+  animation: h-spark 0.5s step-end 3;
+}
+.is-happy .h-spark.s2 {
+  animation-delay: 0.15s;
+}
+.is-happy .h-spark.s3 {
+  animation-delay: 0.3s;
+}
+.mood-asleep .h-z {
+  animation: h-z 3s linear infinite;
+}
+.mood-asleep .h-z.z2 {
+  animation-delay: -1s;
+}
+.mood-asleep .h-z.z3 {
+  animation-delay: -2s;
+}
+.mood-unsure .h-q {
+  display: inline;
+  animation: h-q 1.2s step-end infinite;
+}
+@keyframes h-shadow {
+  0%,
+  100% {
+    transform: scaleX(1);
+  }
+  50% {
+    transform: scaleX(0.84);
+  }
+}
+@keyframes h-shadow-jump {
+  0%,
+  70%,
+  100% {
+    transform: scaleX(1);
+  }
+  40% {
+    transform: scaleX(0.6);
+  }
+}
+@keyframes h-led {
+  0% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.35;
+  }
+}
+@keyframes h-flare {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+@keyframes h-arc {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+@keyframes h-spark {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes h-blink-open {
+  0% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 0;
+  }
+  92% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 0;
+  }
+  98% {
+    opacity: 1;
+  }
+}
+@keyframes h-blink-close {
+  0% {
+    opacity: 0;
+  }
+  88% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 0;
+  }
+  95% {
+    opacity: 1;
+  }
+  98% {
+    opacity: 0;
+  }
+}
+@keyframes h-look {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-1px);
+  }
+  50% {
+    transform: translateX(0);
+  }
+  75% {
+    transform: translateX(1px);
+  }
+}
+@keyframes h-wing-up {
+  0% {
+    opacity: 1;
+  }
+  25% {
+    opacity: 0;
+  }
+}
+@keyframes h-wing-mid {
+  0% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  75% {
+    opacity: 1;
+  }
+}
+@keyframes h-wing-down {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 0;
+  }
+}
+@keyframes h-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1.5px);
+  }
+}
+@keyframes h-breathe {
+  0%,
+  100% {
+    transform: translateY(1px);
+  }
+  50% {
+    transform: translateY(1.7px);
+  }
+}
+@keyframes h-wobble {
+  0% {
+    transform: translateX(0);
+  }
+  40% {
+    transform: translateX(-1px);
+  }
+  55% {
+    transform: translateX(1px);
+  }
+  70% {
+    transform: translateX(0);
+  }
+}
+@keyframes h-jump {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-6px);
+  }
+  70% {
+    transform: translateY(0);
+  }
+  85% {
+    transform: translateY(-1px);
+  }
+}
+@keyframes h-fade-out {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes h-fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes h-z {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  15% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(4px, -8px);
+  }
+}
+@keyframes h-q {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1px);
+  }
+}
+
+/* ---------- Router FiberHome ---------- */
+.r-led {
+  animation: r-led 1.4s step-end infinite;
+}
+.r-led.l2 {
+  animation-delay: -0.45s;
+}
+.r-led.l3 {
+  animation-delay: -0.9s;
+}
+.router--reading .r-led {
+  animation-duration: 0.4s;
+}
+.router--quiet .r-led {
+  animation: none;
+  opacity: 0.3;
+}
+.r-wave {
+  opacity: 0;
+}
+.router--reporting .r-wave {
+  animation: r-wave 1.5s step-end infinite;
+}
+.router--reporting .r-wave.a2 {
+  animation-delay: -1s;
+}
+.router--reporting .r-wave.a3 {
+  animation-delay: -0.5s;
+}
+.router--reading .r-wave {
+  animation: r-wave 0.6s step-end infinite;
+}
+.router--reading .r-wave.a2 {
+  animation-delay: -0.4s;
+}
+.router--reading .r-wave.a3 {
+  animation-delay: -0.2s;
+}
+.r-eyes-blink {
+  opacity: 0;
+}
+.r-eyes {
+  animation: h-blink-open 5s step-end infinite;
+}
+.r-eyes-blink {
+  animation: h-blink-close 5s step-end infinite;
+}
+.router--quiet .r-eyes {
+  animation: none;
+  opacity: 0;
+}
+.router--quiet .r-eyes-blink {
+  animation: none;
+  opacity: 1;
+}
+.r-bob {
+  animation: r-bob 3s ease-in-out infinite;
+}
+.router--quiet .r-bob {
+  animation: none;
+  transform: translateY(0.6px);
+}
+.r-q {
+  display: none;
+}
+.router--quiet .r-q {
+  display: inline;
+  animation: h-q 1.2s step-end infinite;
+}
+@keyframes r-led {
+  0% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 0.25;
+  }
+  80% {
+    opacity: 1;
+  }
+}
+@keyframes r-wave {
+  0% {
+    opacity: 1;
+  }
+  34% {
+    opacity: 0;
+  }
+}
+@keyframes r-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-0.6px);
+  }
+}
+
+/* ---------- Nube, equipos, moneda ---------- */
+.cloud-bob {
+  animation: h-bob 3.6s ease-in-out infinite;
+}
+.cloud--busy .cloud-bob {
+  animation-duration: 0.9s;
+}
+.cloud--unsure .cloud-bob {
+  animation: h-wobble 2.2s step-end infinite;
+}
+.cloud-q,
+.cloud-rain {
+  display: none;
+}
+.cloud--unsure .cloud-q {
+  display: inline;
+  animation: h-q 1.2s step-end infinite;
+}
+.cloud--rain .cloud-rain {
+  display: inline;
+  animation: cloud-rain 0.9s steps(3, end) infinite;
+}
+.cloud--rain .cloud-rain.d2 {
+  animation-delay: -0.3s;
+}
+.cloud--rain .cloud-rain.d3 {
+  animation-delay: -0.6s;
+}
+@keyframes cloud-rain {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(5px);
+    opacity: 0;
+  }
+}
+.computer-z {
+  animation: computer-z 2.4s step-end infinite;
+}
+@keyframes computer-z {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+.coin-spin {
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: coin-spin 3s steps(8, end) infinite;
+}
+.coin-spin--fast {
+  animation-duration: 1s;
+}
+@keyframes coin-spin {
+  0% {
+    transform: scaleX(1);
+  }
+  12% {
+    transform: scaleX(0.15);
+  }
+  25% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+/* ---------- Escena de atardecer ---------- */
+.scene-star {
+  animation: scene-twinkle 2.6s step-end infinite;
+}
+.scene-star.t2 {
+  animation-delay: -0.9s;
+}
+.scene-star.t3 {
+  animation-delay: -1.7s;
+}
+@keyframes scene-twinkle {
+  0% {
+    opacity: 1;
+  }
+  66% {
+    opacity: 0.15;
+  }
+  82% {
+    opacity: 1;
+  }
+}
+.scene-cloud-1 {
+  animation: scene-drift-1 24s ease-in-out infinite alternate;
+}
+.scene-cloud-2 {
+  animation: scene-drift-2 32s ease-in-out infinite alternate;
+}
+.scene-cloud-3 {
+  animation: scene-drift-3 18s ease-in-out infinite alternate;
+}
+@keyframes scene-drift-1 {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-14px);
+  }
+}
+@keyframes scene-drift-2 {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(12px);
+  }
+}
+@keyframes scene-drift-3 {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-8px);
+  }
+}
+.scene-halo {
+  animation: scene-halo 3.4s ease-in-out infinite;
+}
+@keyframes scene-halo {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.75;
+  }
+}
+.scene-shooting {
+  opacity: 0;
+  animation: scene-shoot 9s linear infinite;
+}
+@keyframes scene-shoot {
+  0%,
+  88% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  89% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  96% {
+    opacity: 1;
+    transform: translate(-36px, 14px);
+  }
+  97%,
+  100% {
+    opacity: 0;
+    transform: translate(-36px, 14px);
+  }
+}
+.scene-firefly {
+  animation: scene-firefly 3s ease-in-out infinite;
+}
+.scene-firefly.f2 {
+  animation-delay: -0.8s;
+}
+.scene-firefly.f3 {
+  animation-delay: -1.6s;
+}
+.scene-firefly.f4 {
+  animation-delay: -2.3s;
+}
+@keyframes scene-firefly {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+.scene-window {
+  animation: scene-window 7s step-end infinite;
+}
+@keyframes scene-window {
+  0% {
+    opacity: 1;
+  }
+  72% {
+    opacity: 0.35;
+  }
+  76% {
+    opacity: 1;
+  }
+}
+.scene--dim .scene-sky {
+  opacity: 0.55;
+}

@@ -1,0 +1,21 @@
+[Unit]
+Description=Infra Control outbound PC status
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /usr/local/lib/infra-control/reporter.py
+ExecStop=/usr/bin/python3 /usr/local/lib/infra-control/reporter.py --once stopping
+Restart=always
+RestartSec=3
+TimeoutStopSec=15
+StateDirectory=infra-control-report
+StateDirectoryMode=0700
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ReadWritePaths=/var/lib/infra-control-report
+
+[Install]
+WantedBy=multi-user.target

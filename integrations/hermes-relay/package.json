@@ -1,0 +1,1 @@
+{"name":"hermes-windows-relay","private":true,"type":"module","scripts":{"test":"node --test test/*.test.mjs","deploy":"wrangler deploy","dev":"wrangler dev"},"devDependencies":{"miniflare":"5.20261104.0-beta","wrangler":"4.158.0"}}

@@ -1,0 +1,30 @@
+# Vaultwarden para secretos de agentes. Seguimiento: issue #204; diseño en docs/secretos-agentes.md.
+# Solo loopback: el acceso externo lo da nginx con HTTPS, que además devuelve 404 en /admin.
+# Alta del dueño: VAULTWARDEN_SIGNUPS=false y una invitación creada desde loopback con un
+# VAULTWARDEN_ADMIN_TOKEN efímero que se retira justo después (vacío = panel /admin desactivado).
+services:
+  vaultwarden:
+    image: vaultwarden/server:1.37.5
+    restart: unless-stopped
+    user: "1100:1100"
+    environment:
+      DOMAIN: ${VAULTWARDEN_DOMAIN:?URL HTTPS final, p. ej. https://vault.example}
+      SIGNUPS_ALLOWED: ${VAULTWARDEN_SIGNUPS:-false}
+      ADMIN_TOKEN: ${VAULTWARDEN_ADMIN_TOKEN:-}
+      INVITATIONS_ALLOWED: "true"
+      SHOW_PASSWORD_HINT: "false"
+      ROCKET_PORT: "8080"
+      LOG_LEVEL: warn
+    ports:
+      - "127.0.0.1:${VAULTWARDEN_PORT:-8222}:8080"
+    volumes:
+      - ./data:/data
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    tmpfs:
+      - /tmp
+    mem_limit: 256m
+    cpus: 0.5

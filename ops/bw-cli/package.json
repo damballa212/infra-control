@@ -1,0 +1,8 @@
+{
+  "name": "infra-control-bw-cli",
+  "private": true,
+  "description": "CLI oficial de Bitwarden para el conector de Vaultwarden (server/secrets-vault-bw.ts). Versión fijada.",
+  "dependencies": {
+    "@bitwarden/cli": "2026.10.0"
+  }
+}

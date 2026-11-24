@@ -1,0 +1,29 @@
+Use case: ui-mockup / reference-driven redesign. Produce ONE extraordinary high-fidelity MOBILE HOME SCREEN for Infra Control, portrait 1024x1536, edge-to-edge software UI, no phone frame. Use the attached "Carbon / Copper" concept as the APPROVED FAVORITE DIRECTION. The user wants another variant derived from it with MUCH MORE PERSONALITY and significantly stronger design. Preserve its nocturnal carbon, warm copper, beautiful small hardware imagery and practical content. Elevate it into a singular design language, not a generic dark SaaS template.
+
+NEW ART DIRECTION — CARBON / ATELIER:
+An intimate personal control console with the precision and understated warmth of a premium hi-fi component. Not a dashboard with bento cards. Rich ink-black #0E1011 background, matte carbon #191C1D surfaces, thin warm charcoal #363532 edges, ivory #EFE8DD text, satin copper #C7936C accents. Small soft muted jade LEDs paired with textual states. Copper is carefully concentrated in one principal action, small editorial labels, slim edge details and selected navigation, never a gold gradient everywhere. Type pairing: beautifully proportioned humanist neo-grotesk for names/controls, precise narrow monospace ONLY on micro labels and timestamp values. Refined letter spacing, restrained punctuation. No giant slogan, no huge Control headline. No mascot, bird, robot, purple, green lime, mountains, glassmorphism, grain, fake graphs, percentages, unrelated meters, decorative knobs, gold jewelry, gratuitous screws or RGB lighting. Highly intentional alignment. A tiny abstract copper monogram of two offset vertical strokes is the brand identity, NOT a random cartoon.
+
+THIS MUST LOOK LIKE EXQUISITELY DESIGNED ACTUAL SOFTWARE. Distinct details: small recessed metadata labels, fine architectural separators with tiny copper end-caps, a single continuous control console containing the PC and its router, custom restrained iconography and tangible rectangular buttons with subtle 8px corners instead of generic huge pills. Subtle lighting ONLY on a small photoreal hardware asset and very restrained 1px control edges. UI backgrounds flat.
+
+LAYOUT:
+HEADER (about 210px total at 1024px output width):
+At top tiny copper monogram + 'infra control' lowercase left, small discreet DEMO stamp and settings icon right.
+Below left 'Buenas noches,' in subdued readable ivory and 'Admin.' in distinctive confident warm ivory 64px maximum. Right small 'TU ESPACIO' eyebrow and 'Control' as quieter 28px label; no greeting repeated. A minimal status rail below with jade dot + 'Sin alertas' left, 'Última lectura hace 12 s' right. Lovely open space without wasting a third of screen.
+
+MAIN CONSOLE (roughly y240 to y900):
+A single sophisticated matte carbon enclosure with 16px corner radii and 1px warm border, micro copper corner index top left. Top row 'CASA / 01' in small copper technical lettering, 'En línea' with tiny green LED far right.
+Main upper area is asymmetric: left title 'PC de casa' in 55px warm ivory, current system 'CachyOS' 38px and small 'Último aviso hace 12 s'. Right a BEAUTIFUL SMALL bespoke black desktop tower and monitor object, very art-directed physical hardware illustration: black finned tower, tiny copper power line, slim monitor displaying a plain charcoal screen with a single refined copper arc (not landscape or logo), no keyboard/mouse clutter. Three-quarter view, soft copper rim light from one side, naturally grounded in panel, occupying about 25% of panel, not a giant shopping product shot. Mature personal machine.
+Below, full-width thin divider and a precision action deck: wide matte SATIN COPPER button with BLACK 'Cambiar sistema' and two switching arrows, 8px corners, aligned secondary dark outlined 'Apagar' with subtle muted red power icon. Keep secondary visually quieter, no dangerous toggle. Both readable comfortable controls.
+A fine rule separates the integrated ROUTER BAND at bottom of SAME console: small understated realistic black router or custom line icon left, 'FiberHome' medium ivory, 'Reportando · hace 25 s' smaller readable muted ivory. Compact dark bordered 'Leer' button right. Small caption 'No confirma acceso a Internet'. No huge empty card.
+
+SECOND SECTION:
+A small copper label 'ORQUESTADOR / 02', followed by a clean shallow matte carbon resource strip with tiny brand-consistent abstract three stacked copper bars at left (NO server render, NO mascot). Title 'Hermes', text status 'EC2 encendida' with muted green dot, below 'Observado hace 40 s'. Controls 'Consultar' and 'Energía' aligned in a compact row beneath or to right, consistent restrained corner radius and line weight. Do not duplicate an oversized illustration.
+
+LOWER SECTION:
+Label 'TAMBIÉN EN TU ESPACIO' small muted ivory.
+Two compact horizontal ledger rows, not 2 decorative bento tiles: precise laptop outline + 'MacBook', right-aligned 'Sin agente' and chevron; cloud outline + 'Nube', right-aligned 'Ver equipos' and chevron. Fine separators, breathing room.
+
+BOTTOM NAV:
+Dedicated near-black full-width navigation rail, thin warm top edge. Four equal line icons with labels beneath: 'Inicio', 'Equipos', 'Actividad', 'Costes'. Selected Inicio small copper icon and tiny copper top line marker; remaining ivory-gray with enough contrast. Clear bottom safe area. All content visible in ONE viewport.
+
+Polish requirements: every label consistent, no tiny illegible copy, 390 CSS px plausible mobile UI; balanced contrast, tiny corner details instead of lots of borders, no filler slogans or fake real-time data. A sense of nighttime ritual and ownership conveyed through precise craft, not marketing prose. Must feel noticeably more composed and more distinctive than reference yet recognizably its carbon/copper evolution. Correct Spanish text. The goal is a personal instrument you would want to use, not generic AI showcase art.

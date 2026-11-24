@@ -1,0 +1,15 @@
+[Unit]
+Description=Infra Control outbound command agent
+After=network-online.target infra-control-reporter.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /usr/local/lib/infra-control/commander.py
+Restart=always
+RestartSec=3
+ProtectHome=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

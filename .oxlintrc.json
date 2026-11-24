@@ -1,0 +1,10 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript"],
+  "categories": { "correctness": "warn" },
+  "rules": {
+    "no-control-regex": "off",
+    "no-unused-vars": "warn"
+  },
+  "ignorePatterns": ["dist", "node_modules", "coverage", "design", ".local", "pilots", "research"]
+}

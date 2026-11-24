@@ -1,0 +1,73 @@
+/* Pantalla de acceso v2: escena decorativa (sin datos) y un formulario corto. */
+.login2 {
+  position: relative; isolation: isolate; min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column;
+  background: var(--bg); color: var(--text); font-family: var(--sans);
+  padding: env(safe-area-inset-top) max(24px, env(safe-area-inset-right)) env(safe-area-inset-bottom) max(24px, env(safe-area-inset-left));
+}
+.login2__glow {
+  position: absolute; z-index: -1; inset: 0 0 auto 0; height: 560px; pointer-events: none;
+  background: radial-gradient(80% 55% at 50% 16%, rgb(255 122 107 / 0.2) 0%, rgb(91 63 140 / 0.14) 40%, transparent 72%);
+}
+.login2__art { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 230px; padding-top: 24px; filter: drop-shadow(0 22px 30px rgb(0 0 0 / 0.28)); }
+.login2__art--lg, .login2__tagline { display: none; }
+.login2__panel { flex: 1; display: flex; flex-direction: column; }
+.login2__form { width: 100%; max-width: 420px; margin: 0 auto; padding-bottom: 28px; display: flex; flex-direction: column; flex: 1; }
+.login2__brand { display: flex; align-items: center; gap: 10px; margin: 6px 0 0; font: 600 12px var(--mono); letter-spacing: 0.12em; color: var(--text-3); }
+.login2__mark { display: inline-block; width: 30px; height: 3px; border-radius: 2px; background: linear-gradient(90deg, #5b3f8c, #ff7a6b 55%, #ffb347); flex-shrink: 0; }
+.login2__title { margin: 10px 0 0; font: 700 32px/1.08 var(--sans); letter-spacing: -0.04em; }
+.login2__sub { margin: 6px 0 4px; font-size: 14.5px; color: var(--text-2); }
+.login2__notice { display: flex; align-items: center; gap: 10px; margin: 14px 0 0; padding: 11px 13px; border-radius: 14px; background: var(--sunken); border: 1px solid var(--border); font-size: 13px; line-height: 1.4; color: var(--text-2); }
+.login2__notice .icon, .login2__error .icon, .login2__foot .icon, .login2__submit .icon { width: 16px; height: 16px; flex-shrink: 0; }
+.login2__notice--bad { background: var(--bad-bg); border-color: color-mix(in srgb, var(--bad) 35%, transparent); color: var(--bad-text); }
+.login2 form { display: flex; flex-direction: column; }
+.login2__field { display: block; margin-top: 14px; }
+.login2__label { display: block; margin: 0 0 6px 2px; font: 600 12.5px var(--sans); color: var(--text-2); }
+.login2__control { position: relative; display: flex; align-items: center; }
+.login2__input {
+  width: 100%; min-height: 52px; box-sizing: border-box; padding: 0 16px; border-radius: 15px; border: 1px solid var(--border); background: var(--surface);
+  font: 500 16px var(--sans); color: var(--text); outline: none; transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+.login2__control .login2__input { padding-right: 52px; }
+.login2__input:focus { border-color: var(--text); box-shadow: 0 0 0 4px color-mix(in srgb, var(--text) 10%, transparent); }
+.login2__control.is-error .login2__input { border-color: var(--bad); box-shadow: 0 0 0 4px color-mix(in srgb, var(--bad) 16%, transparent); animation: login2-shake 280ms ease; }
+@keyframes login2-shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+.login2__eye { position: absolute; right: 6px; display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 12px; background: transparent; color: var(--text-2); cursor: pointer; }
+.login2__eye svg { width: 20px; height: 20px; }
+.login2__eye:focus-visible { outline: 2px solid var(--text); }
+.login2__error { display: flex; align-items: center; gap: 7px; margin: 9px 0 0 2px; font: 500 13px var(--sans); color: var(--bad-text); }
+.login2__submit {
+  position: relative; overflow: hidden; display: grid; place-items: center; margin-top: 20px; min-height: 54px; border: 0; border-radius: 16px; cursor: pointer;
+  background: var(--primary); color: var(--on-primary); font: 650 16.5px var(--sans); letter-spacing: -0.01em;
+  box-shadow: 0 12px 30px -12px color-mix(in srgb, var(--primary) 60%, transparent); transition: transform 120ms ease, opacity 120ms ease;
+}
+.login2__submit:active:not(:disabled) { transform: scale(0.985); }
+.login2__submit:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+.login2__submit:disabled { cursor: not-allowed; opacity: 0.45; box-shadow: none; }
+.login2__submit.is-locked { opacity: 1; background: var(--sunken); color: var(--text-2); border: 1px solid var(--border); }
+.login2__progress { position: absolute; left: 0; top: 0; bottom: 0; background: color-mix(in srgb, var(--stale) 22%, transparent); transition: width 1s linear; }
+.login2__submit-label { position: relative; display: inline-flex; align-items: center; gap: 8px; font-variant-numeric: tabular-nums; }
+.login2__hint { margin: 10px 0 0; text-align: center; font-size: 13px; color: var(--text-2); }
+.login2__forgot { margin-top: 16px; text-align: center; font-size: 14px; color: var(--text-2); }
+.login2__forgot summary { display: inline-flex; min-height: 44px; align-items: center; cursor: pointer; list-style: none; font-weight: 500; }
+.login2__forgot summary::-webkit-details-marker { display: none; }
+.login2__forgot p { margin: 4px 0 0; padding: 12px 14px; border-radius: 14px; background: var(--sunken); text-align: left; font-size: 13px; line-height: 1.5; color: var(--text-2); }
+.login2__foot { display: flex; align-items: center; justify-content: center; gap: 6px; margin: auto 0 0; padding-top: 24px; font-size: 12px; color: var(--text-3); }
+
+@media (prefers-reduced-motion: reduce) {
+  .login2__control.is-error .login2__input { animation: none; }
+}
+
+@media (min-width: 901px) {
+  .login2 { flex-direction: row; padding: 0; }
+  .login2__glow { inset: 0 auto 0 0; width: 58%; height: auto; background: radial-gradient(70% 60% at 50% 42%, rgb(255 122 107 / 0.18) 0%, rgb(91 63 140 / 0.14) 40%, transparent 72%); }
+  .login2__art { flex: 1.25; position: relative; padding: 48px; min-height: 0; border-right: 1px solid var(--border); }
+  .login2__art--sm { display: none; }
+  .login2__art--lg { display: block; }
+  .login2__tagline { display: block; position: absolute; left: 48px; right: 48px; bottom: 44px; max-width: 420px; margin: 0; font: 650 22px/1.3 var(--sans); letter-spacing: -0.02em; color: var(--text); }
+  .login2__tagline .login2__mark { display: block; width: 36px; margin-bottom: 14px; }
+  .login2__panel { flex: 0 0 520px; justify-content: center; background: var(--surface); }
+  .login2__form { flex: 0; padding: 0 64px; max-width: none; }
+  .login2__title { font-size: 36px; }
+  .login2__foot { margin-top: 18px; padding-top: 0; justify-content: flex-start; }
+  .login2__forgot { text-align: left; }
+}
